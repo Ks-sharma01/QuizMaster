@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
 
@@ -13,6 +14,7 @@ namespace QuizDishtv.Controllers
             _context = context;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             var viewModel = new QuizViewModel
@@ -32,18 +34,17 @@ namespace QuizDishtv.Controllers
         [HttpPost]
         public IActionResult SubmitAnswer(QuizViewModel model)
         {
-            if(model ==null || model.UserAnswers == null)
+            if(model == null)
             {
-                return View("Error");
+                ModelState.AddModelError("Error", "Answer atleast one question");
+
             }
+
             model.Score = 0;
 
             foreach (var answer in model.UserAnswers)
             {
-                if(answer.Value == null)
-                {
-                    continue;
-                }
+                
                 var correctAnswer = _context.Answers.FirstOrDefault(a => a.AnswerId == answer.Value && a.IsCorrect);
                 if (correctAnswer != null)
                 {

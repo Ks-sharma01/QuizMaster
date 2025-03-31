@@ -1,20 +1,15 @@
 ﻿@model QuizDishtv.Models.User;
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Login";
 }
 <div class="container">
-    <div class="row ">
+    <div class="row">
         <div class="col-4 m-auto shadow p-4">
-            <h1 class="text-center">Register</h1>
-            <form asp-controller="Account" asp-action="Register" method="post">
-                <div>
-                    <label asp-for="UserName">Username:</label>
-                    <input asp-for="UserName" type="text" class="form-control" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </div>
+            <h1 class="text-center">Login</h1>
+            <form asp-controller="Account" asp-action="Login" method="post">
                 <div>
                     <label asp-for="UserEmail">Email:</label>
-                    <input asp-for="UserEmail" type="email" class="form-control" />
+                    <input asp-for="UserEmail" type="email" class="form-control" autofocus />
                     <span asp-validation-for="UserEmail" class="text-danger"></span>
                 </div>
                 <div>
@@ -23,17 +18,20 @@
                     <span asp-validation-for="UserPassword" class="text-danger"></span>
                 </div>
                 <div class="mt-2">
-                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
                 </div>
-                <div class="mt-1">
-                    <a asp-controller="Account" asp-action="Login">Already Have Account || Login</a>
-                </div>
+                 <div class="mt-1"> 
+                    <a asp-controller="Account" asp-action="Register">Don't Have Account || Register'</a>
+
+                 </div> 
             </form>
         </div>
     </div>
 </div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
