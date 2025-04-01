@@ -67,7 +67,8 @@
     @for (int i = 0; i < Model.Questions.Count; i++)
     {
         <div class="question" data-question-index="@i" style="display: none;">
-            <h4 class="bg-success text-white p-2">@Model.Questions[i].Text</h4>
+            <h3 class="text-white p-1 bg-danger">Question no @Model.Questions[i].QuestionId of @Model.Questions.Count</h3>
+            <h4 class="bg-success text-white p-2">@Model.Questions[i].QuestionId) @Model.Questions[i].Text</h4>
             @foreach (var answer in Model.Questions[i].Answers)
             {
                 <label>
@@ -86,12 +87,11 @@
     </div>
 </form>
 
-<a asp-controller="Account" asp-action="Logout" class="btn btn-danger mt-2">Logout</a>
+<a asp-controller="Account" asp-action="Logout" class="btn btn-danger mt-2 btn btn-outline-secondary text-white">Logout</a>
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-           
+        $(document).ready(function () {           
             var currentQuestionIndex = 0;
             var totalQuestions = $(".question").length;
 

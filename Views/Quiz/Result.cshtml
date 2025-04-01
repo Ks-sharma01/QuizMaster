@@ -1,19 +1,21 @@
 ﻿ @model QuizDishtv.Models.QuizViewModel; 
 
- @{ 
-     ViewData["Title"] = "Results"; 
+  @{  
+      ViewData["Title"] = "Results";  
 
- } 
- <div class="results-container"> 
-     <h2 class="text-center mb-4">Quiz Results</h2> 
+  }  
+ <div> 
+     <h2 class="text-center mb-2 bg-primary text-white p-1">Quiz Results</h2> 
 
      <div class="score-card alert alert-success text-center"> 
-         <h3>Your Score: @Model.Score out of 10 </h3> 
+         <h3>Your Score: @Model.Score out of @TempData["Count"] </h3> 
      </div> 
   
  </div> 
-    
+  <div class="text-center">
+
  <a asp-action="Index" class="btn btn-danger">Try Again</a>
+  </div>  
 
 
 

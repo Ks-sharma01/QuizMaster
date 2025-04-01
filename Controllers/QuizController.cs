@@ -28,11 +28,11 @@ namespace QuizDishtv.Controllers
                     {
                         QuestionId = q.QuestionId,
                         Text = q.Text,
-                        Answers = q.Answers.ToList()
+                        Answers = q.Answers
                     }).ToList()
 
             };
-
+            TempData["Count"] = viewModel.Questions.Count;
             return View(viewModel);
 
         }
@@ -55,6 +55,7 @@ namespace QuizDishtv.Controllers
             return View("Result", model);
 
         }
+   
     }
 }
 
