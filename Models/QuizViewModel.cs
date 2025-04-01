@@ -2,8 +2,10 @@
 {
     public class QuizViewModel
     {
-        public List<Question> Questions { get; set; } 
+        public List<Question> Questions { get; set; }
         public Dictionary<int, int> UserAnswers { get; set; } = new Dictionary<int, int>();
         public int Score { get; set; }
+        public int CurrentQuestionIndex { get; set; }
+      
     }
 }

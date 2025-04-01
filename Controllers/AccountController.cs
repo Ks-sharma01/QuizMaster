@@ -13,6 +13,7 @@ namespace QuizDishtv.Controllers
     public class AccountController : Controller
     {
         private readonly QuizDbContext _context;
+
         public AccountController(QuizDbContext context)
         {
             _context = context;
@@ -60,7 +61,6 @@ namespace QuizDishtv.Controllers
             return View();
         } 
         
-
         [HttpPost]
         public async Task<IActionResult> Register(User u)
         {

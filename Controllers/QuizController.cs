@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
+
 
 namespace QuizDishtv.Controllers
 {
@@ -26,33 +30,65 @@ namespace QuizDishtv.Controllers
                         Text = q.Text,
                         Answers = q.Answers.ToList()
                     }).ToList()
+
             };
 
             return View(viewModel);
+
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult SubmitAnswer(QuizViewModel model)
         {
-            if(model == null)
-            {
-                ModelState.AddModelError("Error", "Answer atleast one question");
-
-            }
-
             model.Score = 0;
 
             foreach (var answer in model.UserAnswers)
             {
-                
                 var correctAnswer = _context.Answers.FirstOrDefault(a => a.AnswerId == answer.Value && a.IsCorrect);
                 if (correctAnswer != null)
                 {
                     model.Score++;
                 }
             }
-            
+
             return View("Result", model);
+
         }
     }
 }
+
+//            [HttpPost]
+//            public IActionResult SubmitAnswer(int CurrentQuestionIndex, int SelectedAnswer)
+//        {
+//            // Get the list of questions from the session or database
+//            var questions = HttpContext.Session.GetObject<List<Question>>("QuizQuestions");
+//            var viewModel = new QuizViewModel
+//            {
+//                Questions = questions,
+//                CurrentQuestionIndex = CurrentQuestionIndex,
+//                Score = HttpContext.Session.GetInt32("QuizScore") ?? 0
+//            };
+
+//            // Check if the selected answer is correct
+//            if (questions[CurrentQuestionIndex].CorrectAnswerId == SelectedAnswer)
+//            {
+//                viewModel.Score++;
+//            }
+
+//            // Save the updated score in the session
+//            HttpContext.Session.SetInt32("QuizScore", viewModel.Score);
+
+//            // Move to the next question or display the result
+//            if (CurrentQuestionIndex >= questions.Count - 1)
+//            {
+//                // Final result
+//                return View("Result", viewModel.Score);
+//            }
+
+//            viewModel.CurrentQuestionIndex++;
+//            return View("Quiz", viewModel);
+//        }
+
+//    }
+//}

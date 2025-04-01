@@ -1,12 +1,72 @@
-﻿@model QuizDishtv.Models.QuizViewModel
+﻿ @* @model QuizDishtv.Models.QuizViewModel  *@
+
+ @* @{   *@
+ @*      ViewData["Title"] = "Home";   *@
+ @*  }   *@
+ @*  <form asp-controller="Quiz" asp-action="SubmitAnswer" method="post">   *@
+ @*       @for (int i = 0; i < Model.Questions.Count; i++)    *@
+ @*       {    *@
+ @*           <div>    *@
+ @*              <h4 class="bg-success text-white p-2">@Model.Questions[i].Text</h4>   *@
+ @*               @foreach (var answer in Model.Questions[i].Answers)   *@
+ @*               {    *@
+ @*                   <label>    *@
+ @*                       <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" required />   *@
+ @*                       @answer.Text    *@
+ @*                  </label>    *@
+ @*                  <br />    *@
+ @*              }    *@
+ @*          </div>    *@
+ @*           <hr />    *@
+ @*      }   *@
+    
+ @*  <button type="submit" class="btn btn-success">Submit</button> *@
+ @*      <a asp-controller="Account" asp-action="Logout" class="btn btn-danger">Logout</a> *@
+ @* </form>  *@
+
+@* @model QuizDishtv.Models.QuizViewModel *@
+
+@* @{ *@
+@*     ViewData["Title"] = "Quiz"; *@
+@* } *@
+
+@* <form asp-controller="Quiz" asp-action="SubmitAnswer" method="post"> *@
+@*     <div> *@
+@*         <h4 class="bg-success text-white p-2">@Model.Questions[Model.CurrentQuestionIndex].Text</h4> *@
+
+@*         @foreach (var answer in Model.Questions[Model.CurrentQuestionIndex].Answers) *@
+@*         { *@
+@*             <label> *@
+@*                 <input type="radio" name="SelectedAnswer" value="@answer.AnswerId" required /> *@
+@*                 @answer.Text *@
+@*             </label> *@
+@*             <br /> *@
+@*         } *@
+@*     </div> *@
+
+@*     <input type="hidden" name="CurrentQuestionIndex" value="@Model.CurrentQuestionIndex" /> *@
+
+@*     @if (Model.CurrentQuestionIndex < Model.Questions.Count - 1) *@
+@*     { *@
+@*         <button type="submit" class="btn btn-success">Next</button> *@
+@*     } *@
+@*     else *@
+@*     { *@
+@*         <button type="submit" class="btn btn-success">Submit Quiz</button> *@
+@*     } *@
+@* </form> *@
+
+
+@model QuizDishtv.Models.QuizViewModel
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Quiz";
 }
-<form asp-controller="Quiz" asp-action="SubmitAnswer" method="post">
+
+<form id="quizForm" asp-controller="Quiz" asp-action="SubmitAnswer" method="post">
     @for (int i = 0; i < Model.Questions.Count; i++)
     {
-        <div>
+        <div class="question" data-question-index="@i" style="display: none;">
             <h4 class="bg-success text-white p-2">@Model.Questions[i].Text</h4>
             @foreach (var answer in Model.Questions[i].Answers)
             {
@@ -14,13 +74,49 @@
                     <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" required />
                     @answer.Text
                 </label>
-                
                 <br />
             }
         </div>
-        <hr />
     }
-   
-    <button type="submit" class="btn btn-success">Submit</button>
-    <a asp-controller="Account" asp-action="Logout" class="btn btn-danger">Logout</a>
+
+    <div class="pagination-controls">
+        <button type="button" id="prevBtn" class="btn btn-secondary" style="display: none;">Previous</button>
+        <button type="button" id="nextBtn" class="btn btn-primary">Next</button>
+        <button type="submit" id="submitBtn" class="btn btn-success" style="display: none;">Submit</button>
+    </div>
 </form>
+
+<a asp-controller="Account" asp-action="Logout" class="btn btn-danger mt-2">Logout</a>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var currentQuestionIndex = 0;
+            var totalQuestions = $(".question").length;
+
+            function showQuestion(index) {
+                $(".question").hide();
+                $(".question[data-question-index='" + index + "']").show();
+                $("#prevBtn").toggle(index > 0);
+                $("#nextBtn").toggle(index < totalQuestions - 1);
+                $("#submitBtn").toggle(index === totalQuestions - 1);
+            }
+
+            $("#prevBtn").click(function () {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--;
+                    showQuestion(currentQuestionIndex);
+                }
+            });
+
+            $("#nextBtn").click(function () {
+                if (currentQuestionIndex < totalQuestions - 1) {
+                    currentQuestionIndex++;
+                    showQuestion(currentQuestionIndex);
+                }
+            });
+
+            showQuestion(currentQuestionIndex);
+        });
+    </script>
+}
