@@ -71,7 +71,7 @@
             @foreach (var answer in Model.Questions[i].Answers)
             {
                 <label>
-                    <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" required />
+                    <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" />
                     @answer.Text
                 </label>
                 <br />
@@ -80,8 +80,8 @@
     }
 
     <div class="pagination-controls">
-        <button type="button" id="prevBtn" class="btn btn-secondary" style="display: none;">Previous</button>
-        <button type="button" id="nextBtn" class="btn btn-primary">Next</button>
+        <button type="button" id="prevBtn" class="btn btn-secondary mt-1 " style="display: none;"><- Previous</button>
+        <button type="button" id="nextBtn" class="btn btn-primary mt-1" >Next -></button>
         <button type="submit" id="submitBtn" class="btn btn-success" style="display: none;">Submit</button>
     </div>
 </form>
@@ -91,6 +91,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+           
             var currentQuestionIndex = 0;
             var totalQuestions = $(".question").length;
 
@@ -110,12 +111,13 @@
             });
 
             $("#nextBtn").click(function () {
+
                 if (currentQuestionIndex < totalQuestions - 1) {
                     currentQuestionIndex++;
                     showQuestion(currentQuestionIndex);
                 }
             });
-
+            
             showQuestion(currentQuestionIndex);
         });
     </script>

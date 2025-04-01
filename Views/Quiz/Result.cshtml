@@ -1,4 +1,4 @@
-﻿ @model QuizViewModel 
+﻿ @model QuizDishtv.Models.QuizViewModel; 
 
  @{ 
      ViewData["Title"] = "Results"; 
@@ -8,18 +8,12 @@
      <h2 class="text-center mb-4">Quiz Results</h2> 
 
      <div class="score-card alert alert-success text-center"> 
-         <h3>Your Score: @Model.Score out of 10</h3> 
+         <h3>Your Score: @Model.Score out of 10 </h3> 
      </div> 
   
  </div> 
     
  <a asp-action="Index" class="btn btn-danger">Try Again</a>
 
-@* @model int *@
 
-@* @{ *@
-@*     ViewData["Title"] = "Result"; *@
-@* } *@
 
-@* <h2 class="bg-success text-white p-4">Your Score: @Model</h2> *@
-@* <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Home</a> *@
