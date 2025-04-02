@@ -1,5 +1,8 @@
 ﻿@model QuizDishtv.Models.QuizViewModel
+@{
+    ViewData["Title"] = "Report";
 
+}
 <h2 class="text-center">Quiz Report</h2>
 
 <h3 >Score: @Model.Score of @Model.Questions.Count</h3>
@@ -28,3 +31,4 @@
     </tbody>
 
 </table>
+<a asp-action="Index" class="btn btn-danger">Try Again</a>

@@ -70,19 +70,30 @@
             <h3 class="text-white p-1 bg-danger">Question no @Model.Questions[i].QuestionId of @Model.Questions.Count</h3>
             <h4 class="bg-success text-white p-2">@Model.Questions[i].QuestionId) @Model.Questions[i].Text</h4>
 
-            @foreach (var answer in Model.Questions[i].Answers) 
-            { 
+            @* @foreach (var answer in Model.Questions[i].Answers)  *@
+            @* {  *@
 
-                <label> 
-                    <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" /> 
-                    @answer.Text 
-                </label> 
-                <br />
+            @*     <label>  *@
+            @*         <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" />  *@
+            @*         @answer.Text  *@
+            @*     </label>  *@
+            @*     <br /> *@
 
-            } 
-           
+            <div class="answers-container" style="display: flex; flex-wrap: wrap;">
+                @for (int j = 0; j < Model.Questions[i].Answers.ToList().Count; j++)
+                {
+                    <div style="flex: 1 1 50%; box-sizing: border-box; padding: 2px;">
+                        <label>
+                            <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@Model.Questions[i].Answers.ToList()[j].AnswerId" />
+                            @Model.Questions[i].Answers.ToList()[j].Text
+                        </label>
+                    </div>
+                }
+            </div>
         </div>
     }
+        
+    
 
     <div class="pagination-controls">
         <button type="button" id="prevBtn" class="btn btn-secondary mt-1 " style="display: none;"><- Previous</button>
