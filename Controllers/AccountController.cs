@@ -72,7 +72,7 @@ namespace QuizDishtv.Controllers
                     ModelState.AddModelError("UserEmail", "Email is already registered");
                     return View(u);
                 }
-
+                
                 u.UserPassword = HashPassword(u.UserPassword);
                 _context.Users.Add(u);
                 await _context.SaveChangesAsync();
@@ -96,8 +96,8 @@ namespace QuizDishtv.Controllers
                 {
                     var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, "Name"),
-                    new Claim(ClaimTypes.Email, "Email"),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.UserEmail),
                     new Claim("UserId", user.UserId.ToString())
 
                 };

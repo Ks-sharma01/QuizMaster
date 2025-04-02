@@ -24,15 +24,17 @@ namespace QuizDishtv.Controllers
             var viewModel = new QuizViewModel
             {
                 Questions = _context.Questions
-                    .Select(q => new Question
-                    {
-                        QuestionId = q.QuestionId,
-                        Text = q.Text,
-                        Answers = q.Answers
-                    }).ToList()
+            .Include(q => q.Answers)
+            .Select(p => new Question
+            {
+                QuestionId = p.QuestionId,
+                Text = p.Text,
+                Answers = p.Answers
+            }).ToList()
 
             };
             TempData["Count"] = viewModel.Questions.Count;
+           
             return View(viewModel);
 
         }
@@ -51,9 +53,34 @@ namespace QuizDishtv.Controllers
                     model.Score++;
                 }
             }
-
+            //TempData["UserAnswers"] = JsonConvert.SerializeObject(model.UserAnswers);
+            //TempData["Score"] = model.Score;
+            HttpContext.Session.SetString("UserAnswers", JsonConvert.SerializeObject(model.UserAnswers));
+            HttpContext.Session.SetInt32("Score", model.Score);
             return View("Result", model);
 
+        }
+
+        public IActionResult ShowReport(QuizViewModel model)
+        {
+            //    var userAnswers = JsonConvert.DeserializeObject<Dictionary<int, int>>(TempData["UserAnswers"]?.ToString() ?? "{}");
+            //    var score = TempData["Score"] != null ? (int)TempData["Score"] : 0;
+            var userAnswers = JsonConvert.DeserializeObject<Dictionary<int, int>>(HttpContext.Session.GetString("UserAnswers") ?? "{}");
+            var score = HttpContext.Session.GetInt32("Score") ?? 0;
+            var viewModel = new QuizViewModel
+            {
+                Questions = _context.Questions
+                .Include (q => q.Answers)
+                .ToList(),
+                //UserAnswers = model.UserAnswers,
+                //Score = model.Score
+                UserAnswers = userAnswers,
+                Score = score
+
+            };
+            //var questions = _quizService.GetQuestionsWithAnswers();
+            //model.Questions = questions;
+            return View(viewModel);
         }
    
     }

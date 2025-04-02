@@ -1,0 +1,30 @@
+﻿@model QuizDishtv.Models.QuizViewModel
+
+<h2 class="text-center">Quiz Report</h2>
+
+<h3 >Score: @Model.Score of @Model.Questions.Count</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Your Answer</th>
+            <th>Correct Answer</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var question in Model.Questions)
+        {
+            var userAnswer = Model.UserAnswers.ContainsKey(question.QuestionId)
+            ? Model.UserAnswers[question.QuestionId]
+            : (int?)null;
+            var correctAnswer = question.Answers.FirstOrDefault(a => a.IsCorrect)?.Text;
+            <tr>
+                <td>@question.QuestionId) @question.Text</td>
+                <td>@(userAnswer.HasValue ? question.Answers.FirstOrDefault(a => a.AnswerId ==userAnswer)?.Text: "No Answer")</td>
+                <td>@correctAnswer</td>
+            </tr>
+        }
+    </tbody>
+
+</table>

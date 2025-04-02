@@ -1,28 +1,28 @@
-﻿ @* @model QuizDishtv.Models.QuizViewModel  *@
+﻿@* @model QuizDishtv.Models.QuizViewModel  *@
 
- @* @{   *@
- @*      ViewData["Title"] = "Home";   *@
- @*  }   *@
- @*  <form asp-controller="Quiz" asp-action="SubmitAnswer" method="post">   *@
- @*       @for (int i = 0; i < Model.Questions.Count; i++)    *@
- @*       {    *@
- @*           <div>    *@
- @*              <h4 class="bg-success text-white p-2">@Model.Questions[i].Text</h4>   *@
- @*               @foreach (var answer in Model.Questions[i].Answers)   *@
- @*               {    *@
- @*                   <label>    *@
- @*                       <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" required />   *@
- @*                       @answer.Text    *@
- @*                  </label>    *@
- @*                  <br />    *@
- @*              }    *@
- @*          </div>    *@
- @*           <hr />    *@
- @*      }   *@
-    
- @*  <button type="submit" class="btn btn-success">Submit</button> *@
- @*      <a asp-controller="Account" asp-action="Logout" class="btn btn-danger">Logout</a> *@
- @* </form>  *@
+@* @{   *@
+@*      ViewData["Title"] = "Home";   *@
+@*  }   *@
+@*  <form asp-controller="Quiz" asp-action="SubmitAnswer" method="post">   *@
+@*       @for (int i = 0; i < Model.Questions.Count; i++)    *@
+@*       {    *@
+@*           <div>    *@
+@*              <h4 class="bg-success text-white p-2">@Model.Questions[i].Text</h4>   *@
+@*               @foreach (var answer in Model.Questions[i].Answers)   *@
+@*               {    *@
+@*                   <label>    *@
+@*                       <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" required />   *@
+@*                       @answer.Text    *@
+@*                  </label>    *@
+@*                  <br />    *@
+@*              }    *@
+@*          </div>    *@
+@*           <hr />    *@
+@*      }   *@
+
+@*  <button type="submit" class="btn btn-success">Submit</button> *@
+@*      <a asp-controller="Account" asp-action="Logout" class="btn btn-danger">Logout</a> *@
+@* </form>  *@
 
 @* @model QuizDishtv.Models.QuizViewModel *@
 
@@ -69,14 +69,18 @@
         <div class="question" data-question-index="@i" style="display: none;">
             <h3 class="text-white p-1 bg-danger">Question no @Model.Questions[i].QuestionId of @Model.Questions.Count</h3>
             <h4 class="bg-success text-white p-2">@Model.Questions[i].QuestionId) @Model.Questions[i].Text</h4>
-            @foreach (var answer in Model.Questions[i].Answers)
-            {
-                <label>
-                    <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" />
-                    @answer.Text
-                </label>
+
+            @foreach (var answer in Model.Questions[i].Answers) 
+            { 
+
+                <label> 
+                    <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" /> 
+                    @answer.Text 
+                </label> 
                 <br />
-            }
+
+            } 
+           
         </div>
     }
 
@@ -87,7 +91,6 @@
     </div>
 </form>
 
-<a asp-controller="Account" asp-action="Logout" class="btn btn-danger mt-2 btn btn-outline-secondary text-white">Logout</a>
 
 @section Scripts {
     <script>
