@@ -63,21 +63,12 @@
     ViewData["Title"] = "Quiz";
 }
 
-<form id="quizForm" asp-controller="Quiz" asp-action="SubmitAnswer" method="post">
+<form id="quizForm" asp-controller="Quiz" asp-action="SubmitAnswer" method="post" class="mt-4">
     @for (int i = 0; i < Model.Questions.Count; i++)
     {
         <div class="question" data-question-index="@i" style="display: none;">
             <h3 class="text-white p-1 bg-danger">Question no @Model.Questions[i].QuestionId of @Model.Questions.Count</h3>
             <h4 class="bg-success text-white p-2">@Model.Questions[i].QuestionId) @Model.Questions[i].Text</h4>
-
-            @* @foreach (var answer in Model.Questions[i].Answers)  *@
-            @* {  *@
-
-            @*     <label>  *@
-            @*         <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@answer.AnswerId" />  *@
-            @*         @answer.Text  *@
-            @*     </label>  *@
-            @*     <br /> *@
 
             <div class="answers-container" style="display: flex; flex-wrap: wrap;">
                 @for (int j = 0; j < Model.Questions[i].Answers.ToList().Count; j++)
@@ -85,7 +76,7 @@
                     <div style="flex: 1 1 50%; box-sizing: border-box; padding: 2px;">
                         <label>
                             <input type="radio" name="UserAnswers[@Model.Questions[i].QuestionId]" value="@Model.Questions[i].Answers.ToList()[j].AnswerId" />
-                            @Model.Questions[i].Answers.ToList()[j].Text
+                            <span class=" p-2 mt-2 rounded" style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif"> @Model.Questions[i].Answers.ToList()[j].Text </span>
                         </label>
                     </div>
                 }

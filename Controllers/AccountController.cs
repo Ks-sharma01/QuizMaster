@@ -108,7 +108,7 @@ namespace QuizDishtv.Controllers
                        CookieAuthenticationDefaults.AuthenticationScheme,
                        new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                    return RedirectToAction("Index", "Quiz");
+                    return RedirectToAction("Index", "Home");
 
                 }
 
