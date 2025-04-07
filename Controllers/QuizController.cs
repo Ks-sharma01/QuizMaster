@@ -7,6 +7,7 @@ using QuizDishtv.Data;
 using QuizDishtv.Models;
 
 
+
 namespace QuizDishtv.Controllers
 {
     public class QuizController : Controller
@@ -19,11 +20,11 @@ namespace QuizDishtv.Controllers
         }
 
         [Authorize]
-        public IActionResult Index()
+        public IActionResult Index(QuizViewModel model)
         {
             var viewModel = new QuizViewModel
             {
-                Questions = _context.Questions
+            Questions = _context.Questions
             .Include(q => q.Answers)
             .Select(p => new Question
             {
@@ -33,10 +34,9 @@ namespace QuizDishtv.Controllers
             }).ToList()
 
             };
-            TempData["Count"] = viewModel.Questions.Count;
-           
-            return View(viewModel);
 
+            TempData["Count"] = viewModel.Questions.Count;
+            return View(viewModel);
         }
 
         [Authorize]
@@ -51,41 +51,129 @@ namespace QuizDishtv.Controllers
                 if (correctAnswer != null)
                 {
                     model.Score++;
+                    
                 }
             }
-            //TempData["UserAnswers"] = JsonConvert.SerializeObject(model.UserAnswers);
-            //TempData["Score"] = model.Score;
+            TempData["Score"] = model.Score;
+            //HttpContext.Session.SetString("UserAnswers", System.Text.Json.JsonSerializer.Serialize(model.UserAnswers));
             HttpContext.Session.SetString("UserAnswers", JsonConvert.SerializeObject(model.UserAnswers));
-            HttpContext.Session.SetInt32("Score", model.Score);
+            //HttpContext.Session.SetInt32("Score", model.Score);
+            var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name)?.UserId;
+            var QuizResult = _context.Results.FirstOrDefault(temp => temp.UserId == userId);
+
+            if (QuizResult != null)
+            {
+                QuizResult.Score=model.Score;
+                
+            }
+            else
+            {
+                QuizResult = new Result
+                {
+                    Score = model.Score,
+                    UserId = userId.Value,
+                };
+                _context.Results.Add(QuizResult);
+            }
+            _context.SaveChanges();
+            //if(userId != null)
+            //{
+            //    var result = new Result
+            //    {
+            //        Score = model.Score,
+            //        UserId = userId.Value,
+
+            //    };
+            //    _context.Results.Add(result);
+            //    _context.SaveChanges();
+
+            //var viewModel = new QuizViewModel
+            //{
+            //    UserAnswers = model.UserAnswers,
+            //};
+            //}   
             return View("Result", model);
 
         }
 
+        //public IActionResult UpdateScore(int userId, int score)
+        //{
+        //    var QuizResult = _context.Results.FirstOrDefault(temp => temp.UserId == userId);
+        //    if(QuizResult != null)
+        //    {
+        //        QuizResult.Score = score;
+
+        //    }
+        //    else
+        //    {
+        //        QuizResult = new Result
+        //        {
+        //            UserId = userId,
+        //            Score = score
+        //        };
+        //        _context.Results.Add(QuizResult);
+        //    }
+        //    _context.SaveChanges();
+        //    return View(QuizResult);
+        //}
+        //public IActionResult Result(QuizViewModel model)
+        //{
+        //    //var result = _context.Results.FirstOrDefault(temp => temp.UserId == model.Users.UserId);
+        //    var viewModel = new QuizViewModel
+        //    {
+        //        Questions = model.Questions.ToList()
+        //    };
+        //    return View(viewModel);
+        //}
         public IActionResult ShowReport(QuizViewModel model)
         {
-            //    var userAnswers = JsonConvert.DeserializeObject<Dictionary<int, int>>(TempData["UserAnswers"]?.ToString() ?? "{}");
-            //    var score = TempData["Score"] != null ? (int)TempData["Score"] : 0;
-            var userAnswers = JsonConvert.DeserializeObject<Dictionary<int, int>>(HttpContext.Session.GetString("UserAnswers") ?? "{}");
-            var score = HttpContext.Session.GetInt32("Score") ?? 0;
+            //var userAnswer = JsonConvert.DeserializeObject<Dictionary<int, int>>(TempData["UserAnswers"]?.ToString() ?? "{}");
+            //var score = TempData["Score"] != null ? (int)TempData["Score"] : 0;
+           var u =JsonConvert.DeserializeObject<Dictionary<int, int>>(HttpContext.Session.GetString("UserAnswers").ToString() ?? "{}");
+            //            var quizData = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(
+            //    HttpContext.Session.GetString("UserAnswers")
+            //);
             var viewModel = new QuizViewModel
             {
-                Questions = _context.Questions
-                .Include (q => q.Answers)
-                .ToList(),
-                //UserAnswers = model.UserAnswers,
-                //Score = model.Score
-                UserAnswers = userAnswers,
-                Score = score
+                UserAnswers = u,
+                Score = model.Score,
+                Questions = _context.Questions.Include(p => p.Answers)
+                .Select(q => new Question
+                {
+                    QuestionId = q.QuestionId,
+                    Text = q.Text,
+                    Answers = q.Answers
+                }).ToList()
 
             };
             //var questions = _quizService.GetQuestionsWithAnswers();
             //model.Questions = questions;
             return View(viewModel);
+
+            // Fetch all questions and correct answers from the database
+            //var correctAnswers = _context.Answers
+            //                             .Select(q => new
+            //                             {
+            //                                 q.Text,
+            //                                 q.IsCorrect
+            //                             }).ToList();
+
+            //return View(correctAnswers);
         }
-   
+        
+        public IActionResult Profile(User u)
+        {
+            var userIdClaim = User.FindFirst("UserId");
+            if (userIdClaim == null)
+            {
+                return RedirectToAction("Login");
+            }
+            var userId = int.Parse(userIdClaim.Value);
+            var user = _context.Users.FirstOrDefault(x => x.UserId == userId);
+            return View(user);
+        }
     }
 }
-
 //            [HttpPost]
 //            public IActionResult SubmitAnswer(int CurrentQuestionIndex, int SelectedAnswer)
 //        {
