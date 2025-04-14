@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizDishtv.Data;
 
@@ -10,9 +11,11 @@ using QuizDishtv.Data;
 namespace QuizDishtv.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    partial class QuizDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250410060346_AddingCategoryTable")]
+    partial class AddingCategoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,6 +23,28 @@ namespace QuizDishtv.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Maths", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Maths");
+                });
 
             modelBuilder.Entity("QuizDishtv.Models.Answer", b =>
                 {
@@ -75,10 +100,6 @@ namespace QuizDishtv.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("QuestionId");
 
                     b.ToTable("Questions");
@@ -130,6 +151,17 @@ namespace QuizDishtv.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Maths", b =>
+                {
+                    b.HasOne("QuizDishtv.Models.Category", "Category")
+                        .WithMany("Maths")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("QuizDishtv.Models.Answer", b =>
                 {
                     b.HasOne("QuizDishtv.Models.Question", "Question")
@@ -150,6 +182,11 @@ namespace QuizDishtv.Migrations
                         .IsRequired();
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("QuizDishtv.Models.Category", b =>
+                {
+                    b.Navigation("Maths");
                 });
 
             modelBuilder.Entity("QuizDishtv.Models.Question", b =>

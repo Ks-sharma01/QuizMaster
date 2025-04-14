@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
-
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Routing.Template;
 
 
 namespace QuizDishtv.Controllers
@@ -20,24 +21,156 @@ namespace QuizDishtv.Controllers
         }
 
         [Authorize]
-        public IActionResult Index(QuizViewModel model)
+        public IActionResult Index(QuizViewModel viewModel, int id)
         {
-            var viewModel = new QuizViewModel
+            var cateid = _context.Questions.FirstOrDefault(temp => temp.CategoryId == id);
+            if (cateid != null)
             {
-            Questions = _context.Questions
-            .Include(q => q.Answers)
-            .Select(p => new Question
-            {
-                QuestionId = p.QuestionId,
-                Text = p.Text,
-                Answers = p.Answers
-            }).ToList()
-
-            };
-
+                viewModel = new QuizViewModel
+                {
+                Questions = _context.Questions.Where(r => r.CategoryId == id)
+               .Include(q => q.Answers)
+               .Select(p => new Question
+               {
+                   QuestionId = p.QuestionId,
+                   Text = p.Text,
+                   Answers = p.Answers,
+               }).ToList()
+                };
+            } 
+            
             TempData["Count"] = viewModel.Questions.Count;
-            return View(viewModel);
+            //TempData["Category"] = _context.Category.Select(temp => temp.Name);
+            return View("Index", viewModel);
+            
+            //if(id == cateid)
+            //{
+            //    viewModel = new QuizViewModel
+            //    {
+            //        Questions = _context.Questions.Where(r => r.CategoryId == id)
+            //  .Include(q => q.Answers)
+            //  .Select(p => new Question
+            //  {
+            //      QuestionId = p.QuestionId,
+            //      Text = p.Text,
+            //      Answers = p.Answers
+            //  }).ToList()
+
+            //    };
+
+            //}
+            //if(id == cateid)
+            //{
+            //    viewModel = new QuizViewModel
+            //    {
+            //        Questions = _context.Questions.Where(r => r.CategoryId == id)
+            //  .Include(q => q.Answers)
+            //  .Select(p => new Question
+            //  {
+            //      QuestionId = p.QuestionId,
+            //      Text = p.Text,
+            //      Answers = p.Answers
+            //  }).ToList()
+
+            //    };
+
+            //}
+            //var viewModel = new QuizViewModel
+            //{
+            //    Questions = _context.Questions.Where(r => r.CategoryId == id)
+            //.Include(q => q.Answers)
+            //.Select(p => new Question
+            //{
+            //    QuestionId = p.QuestionId,
+            //    Text = p.Text,
+            //    Answers = p.Answers
+            //}).ToList()
+
+            //};
+            //var questions = _context.Questions.Select(q => new
+            //{
+            //    Text = q.Text,
+            //    CategoryId = q.CategoryId
+            //}).ToList();
+
+            //if (string.IsNullOrEmpty(tableName))
+            //{
+            //    return BadRequest("Table name cannot be null or empty.");
+            //}
+            //object viewModel = null;
+
+            //switch (tableName) 
+            //{
+                //case "Maths":
+                //    viewModel = _context.Maths
+                //        .Include(q => q.MathOptions) // Assuming Maths has a navigation property MathOptions
+                //        .Select(p => new 
+                //        {
+                //            Id = p.Id,
+                //            Text = p.Text,
+                //            MathOptions = p.MathOptions
+                //        }).ToList();
+                //   TempData["Count"] = viewModel;
+                //    break;
+
+                //case "Category":
+                //    viewModel = _context.Category
+                //        .Select(p => new Category
+                //        {
+                //            CategoryId = p.CategoryId,
+                //            Name = p.Name
+                //        }).ToList();
+                //    TempData["Count"] = ((List<Category>)viewModel).Count;
+                //    break;
+
+            //    default:
+            //        return NotFound($"Table '{tableName}' is not recognized.");
+            //}
+
+            //return View(viewModel);
         }
+        // switch (tableName)
+        //{
+        // case "Maths":
+        // {
+        //             //var viewModel = new QuizViewModel
+        //             // {
+        //             tableName = _context.tableName
+        //             .Include(q => q.MathOptions)
+        //             .Select(p => new Maths
+        //             {
+        //                 Id = p.Id,
+        //                 Text = p.Text,
+        //                 MathOptions = p.MathOptions
+        //             }).ToList();
+        //             //};
+
+        //            //.ToList();
+        //             //};
+        //             TempData["Count"] = viewModel.Maths.Count;
+        //             return View(viewModel);
+
+        //    }
+        //}
+        // return View();
+        //return View(data);
+
+        //var viewModel = new QuizViewModel
+        //{
+        //    Questions = _context.Questions
+        //.Include(q => q.Answers)
+        //.Select(p => new Question
+        //{
+        //    QuestionId = p.QuestionId,
+        //    Text = p.Text,
+        //    Answers = p.Answers
+        //}).ToList()
+
+        //};
+
+        //TempData["Count"] = viewModel.Questions.Count;
+        //return View(viewModel);
+
 
         [Authorize]
         [HttpPost]
@@ -95,7 +228,7 @@ namespace QuizDishtv.Controllers
             return View("Result", model);
 
         }
-
+        
         //public IActionResult UpdateScore(int userId, int score)
         //{
         //    var QuizResult = _context.Results.FirstOrDefault(temp => temp.UserId == userId);
@@ -129,7 +262,7 @@ namespace QuizDishtv.Controllers
         {
             //var userAnswer = JsonConvert.DeserializeObject<Dictionary<int, int>>(TempData["UserAnswers"]?.ToString() ?? "{}");
             //var score = TempData["Score"] != null ? (int)TempData["Score"] : 0;
-           var u =JsonConvert.DeserializeObject<Dictionary<int, int>>(HttpContext.Session.GetString("UserAnswers").ToString() ?? "{}");
+           var u = JsonConvert.DeserializeObject<Dictionary<int, int>>(HttpContext.Session.GetString("UserAnswers").ToString() ?? "{}");
             //            var quizData = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(
             //    HttpContext.Session.GetString("UserAnswers")
             //);
@@ -160,8 +293,14 @@ namespace QuizDishtv.Controllers
 
             //return View(correctAnswers);
         }
+        [Authorize]
+        public IActionResult SelectQuiz()
+        {
+            var subject = _context.Category.Select(p => new {p.CategoryId, p.Name});
+            return View(subject);
+        }
         
-        public IActionResult Profile(User u)
+        public IActionResult Profile(QuizViewModel u)
         {
             var userIdClaim = User.FindFirst("UserId");
             if (userIdClaim == null)
@@ -170,6 +309,7 @@ namespace QuizDishtv.Controllers
             }
             var userId = int.Parse(userIdClaim.Value);
             var user = _context.Users.FirstOrDefault(x => x.UserId == userId);
+            
             return View(user);
         }
     }

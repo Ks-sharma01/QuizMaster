@@ -1,11 +1,13 @@
 ﻿ @model QuizDishtv.Models.QuizViewModel 
- @{ 
-     ViewData["Title"] = "Report"; 
+@{ 
+    ViewData["Title"] = "Report"; 
 
 } 
- <h2 class="text-center">Quiz Report</h2> 
- <h3 >Score: @TempData["Score"] of @Model.Questions.Count</h3> 
- <table class="table"> 
+<h2 class="text-center">Quiz Report</h2> 
+
+<h3 >Score: @TempData["Score"] of @Model.Questions.Count</h3> 
+
+<table class="table"> 
      <thead> 
          <tr> 
              <th>Question</th> 
@@ -28,7 +30,7 @@
          } 
      </tbody> 
 
-<a asp-action="Index" class="btn btn-danger">Re-Attempt</a> 
+<a asp-action="SelectQuiz" class="btn btn-danger">Re-Attempt</a> 
  </table> 
 
 

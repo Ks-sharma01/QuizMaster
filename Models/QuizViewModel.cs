@@ -10,6 +10,7 @@ namespace QuizDishtv.Models
         public int Score { get; set; }
         public Result Results { get; set; }
         public Answer Answers { get; set; }
+        public Category Category { get; set; }
         public User Users { get; set; }
       
     }

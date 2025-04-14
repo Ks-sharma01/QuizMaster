@@ -11,5 +11,8 @@ namespace QuizDishtv.Models
 
         public ICollection<Answer> Answers { get; set; }
 
+        public int CategoryId { get; set; }
+        //public string category { get; set; }
+
     }
 }

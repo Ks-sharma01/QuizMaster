@@ -9,12 +9,10 @@ namespace QuizDishtv.Models
         public int AnswerId { get; set; }
 
         public string Text { get; set; }
-        //public string UserAnswer { get; set; }
+
         public bool IsCorrect { get; set; }
-        //public bool IsCorrect => UserAnswer == IsCorrect,
 
-
-        [ForeignKey("Question")]
+        [ForeignKey("Question")]    
         public int QuestionId { get; set; }
         public Question Question { get; set; }
     }

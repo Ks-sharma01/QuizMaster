@@ -1,7 +1,7 @@
 ﻿@model QuizDishtv.Models.QuizViewModel
-@* @{ *@
-@*     ViewData["Title"] = "Home"; *@
-@* } *@
+ @{ 
+     ViewData["Title"] = "Home"; 
+} 
 
 
 <!DOCTYPE html>
@@ -12,7 +12,6 @@
     <title>QuizMaster - Welcome</title>
     <style>
        
-
         .hero {
             text-align: center;
             padding: 50px;
@@ -35,13 +34,7 @@
             padding: 20px;
             text-align: center;
         }
-
-        .cta {
-            text-align: center;
-            margin: 20px;
-        }
-
-    
+        
     </style>
 </head>
 <body>
@@ -52,7 +45,7 @@
         <h2>Welcome to QuizMaster!</h2>
         <p>Your gateway to fun and knowledge.</p>
        
-        <a style="padding: 10px 20px; font-size: 16px; background: #ff8e42; color: white; border: none; border-radius: 5px; cursor: pointer;" asp-controller="Quiz" asp-action="Index">Play Quiz</a>
+        <a style="padding: 10px 20px; font-size: 16px; background: #ff8e42; color: white; border: none; border-radius: 5px; cursor: pointer;" asp-controller="Quiz" asp-action="SelectQuiz">Play Quiz</a>
     </section>
     <section class="features">
         <div class="feature">
@@ -69,14 +62,13 @@
         </div>
         <div class="feature">
             <h3>🎉 Weekly Challenges</h3>
-            <p>Compete in challenges and win rewards!</p>
+            <p>Complete in challenges and win rewards!</p>
         </div>
     </section>
-    <section class="cta">
-        <p>Ready to start? Click the button above to play your first quiz!</p>
-    </section>
+  
     <footer>
         <p>&copy; 2025 QuizMaster | <a href="#">Privacy Policy</a> | <a href="#">Contact Us</a></p>
     </footer>
 </body>
 </html>
+

@@ -11,5 +11,6 @@ namespace QuizDishtv.Data
         public DbSet<Answer> Answers { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Result> Results { get; set; }
+        public DbSet<Category> Category { get; set; }
     }
 }
