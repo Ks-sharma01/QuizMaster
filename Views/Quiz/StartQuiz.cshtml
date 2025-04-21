@@ -1,5 +1,5 @@
-﻿ @* @model QuizDishtv.Models.QuizViewModel  *@
- @* @model IEnumerable<dynamic> *@
+﻿@* @model QuizDishtv.Models.QuizViewModel  *@
+@* @model IEnumerable<dynamic> *@
 
 @* @{   *@
 @*      ViewData["Title"] = "Home";   *@
@@ -302,16 +302,23 @@ else
     <input type="hidden" name="questionId" value="@Model.QuestionId" />
     <input type="hidden" name="categoryId" value="@categoryId" />
     <input type="hidden" name="questionIndex" value="@questionIndex" />
-<div class="row">
+    <div class="row">
 
-    @foreach (var answer in Model.Answers)
+        @foreach (var answer in Model.Answers)
+        {
+            <div class="col">
+                <input type="radio" name="selectedAnswerId" value="@answer.AnswerId" required />
+                <label name="selectedAnswerId">@answer.Text</label>
+            </div>
+        }
+    </div>
+    @if (questionIndex + 1 == totalQuestions)
     {
-        <div class="col">
-            <input type="radio" name="selectedAnswerId" value="@answer.AnswerId" required />
-            <label name="selectedAnswerId">@answer.Text</label>
-        </div>
+        <button type="submit" class="btn btn-success mt-4">Submit</button>
     }
-</div>
-
+    else
+    {
     <button type="submit" class="btn btn-success mt-4">Next</button>
+        
+    }
 </form>
