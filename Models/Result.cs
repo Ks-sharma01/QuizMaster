@@ -10,9 +10,10 @@ namespace QuizDishtv.Models
 
         public int Score { get; set; }
 
-        [ForeignKey("User")]
         public int UserId { get; set; }
-        
+
+
+        //public Category Category { get; set; }
         public User Users { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizDishtv.Data;
 
@@ -10,9 +11,11 @@ using QuizDishtv.Data;
 namespace QuizDishtv.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    partial class QuizDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418113159_AddingForeignkey0")]
+    partial class AddingForeignkey0
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,18 +142,22 @@ namespace QuizDishtv.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("QuestionId")
+                    b.Property<int>("QuizQuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuizQuestionsQuestionId")
                         .HasColumnType("int");
 
                     b.Property<int>("SelectedAnswerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("QuizQuestionsQuestionId");
 
                     b.HasIndex("SelectedAnswerId");
 
@@ -159,13 +166,13 @@ namespace QuizDishtv.Migrations
 
             modelBuilder.Entity("QuizDishtv.Models.Answer", b =>
                 {
-                    b.HasOne("QuizDishtv.Models.Question", "Questions")
+                    b.HasOne("QuizDishtv.Models.Question", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Questions");
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("QuizDishtv.Models.Question", b =>
@@ -190,9 +197,9 @@ namespace QuizDishtv.Migrations
 
             modelBuilder.Entity("QuizDishtv.Models.UserAnswer", b =>
                 {
-                    b.HasOne("QuizDishtv.Models.Question", "Questions")
+                    b.HasOne("QuizDishtv.Models.Question", "QuizQuestions")
                         .WithMany()
-                        .HasForeignKey("QuestionId")
+                        .HasForeignKey("QuizQuestionsQuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -202,7 +209,7 @@ namespace QuizDishtv.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Questions");
+                    b.Navigation("QuizQuestions");
 
                     b.Navigation("SelectedAnswer");
                 });

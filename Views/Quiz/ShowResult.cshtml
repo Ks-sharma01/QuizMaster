@@ -1,0 +1,64 @@
+﻿ @* @model QuizDishtv.Models.QuizViewModel;  *@
+
+ @*  @{   *@
+ @*      ViewData["Title"] = "Results";   *@
+
+ @*  }   *@
+ @* <div class="mt-4">  *@
+ @*     <h2 class="text-center mb-2 bg-primary text-white p-1">Quiz Results</h2>  *@
+
+ @*     <div class="score-card alert alert-success text-center">  *@
+ @*         @* <h2>@Model.Category.CategoryId</h2> *@ 
+ @*         <h3>Your Score: @Model.Score out of @TempData["Count"] </h3>  *@
+ @*     </div>  *@
+  
+ @* </div>  *@
+ @*  <div class="text-center"> *@
+
+ @* <a asp-controller="Quiz" asp-action="Index" class="btn btn-danger">Try Again</a> *@
+ @* <a asp-controller="Quiz" asp-action="ShowReport" class="btn btn-primary">Show Report</a> *@
+ @*  </div>   *@
+
+ @model List<UserAnswer>
+
+@{
+    ViewData["Title"] = "Your Quiz Result";
+    int score = (int)ViewBag.Score;
+    int total = (int)ViewBag.Total;
+}
+
+<h2>@ViewData["Title"]</h2>
+<h4 class="fw-bold">Score: @score / @total</h4>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Your Answer</th>
+            <th>Correct?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var answer in Model)
+        {
+            <tr>
+                <td>@answer.Questions.Text</td>
+                <td>@answer.SelectedAnswer.Text</td>
+                <td>
+                    @if (answer.SelectedAnswer.IsCorrect)
+                    {
+                        <span style="color: green;">Correct ✅</span>
+                    }
+                    else
+                    {
+                        <span style="color: red;">Wrong ❌</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+    
+</table>
+<a asp-controller="Quiz" asp-action="ShowReport">Show Report</a>
+
+

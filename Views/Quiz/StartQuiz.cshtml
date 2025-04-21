@@ -58,6 +58,7 @@
 @* </form> 
 *@
 
+@*
 
 @model QuizDishtv.Models.QuizViewModel
 
@@ -65,8 +66,7 @@
     ViewData["Title"] = "Quiz";
 }
 
-<form id="quizForm" asp-controller="Quiz" asp-action="SubmitAnswer" method="post" class="mt-4">
-      <h1>@TempData["Category"]</h1> 
+<form id="quizForm" asp-controller="Quiz" asp-action="SubmitAnswer" asp-route-id="" method="post" class="mt-4">
     @for (int i = 0; i < Model.Questions.Count; i++)
     {
         <div class="question" data-question-index="@i" style="display: none;">
@@ -89,8 +89,8 @@
 
 
     <div class="pagination-controls">
-        <button type="button" id="prevBtn" class="btn btn-secondary mt-1 " style="display: none;"><- Previous</button>
-        <button type="button" id="nextBtn" class="btn btn-primary mt-1" >Next -></button>
+        <button type="button" id="prevBtn" class="btn btn-secondary mt-1 " style="display: none;">&larr; Previous</button>
+        <button type="button" id="nextBtn" class="btn btn-primary mt-1">Next &rarr;</button>
         <button type="submit" id="submitBtn" class="btn btn-success" style="display: none;">Submit</button>
     </div>
 </form>
@@ -129,6 +129,7 @@
         });
     </script>
 }
+*@
 
 @*
 @model IEnumerable<dynamic>
@@ -281,3 +282,36 @@ else
     <p>No questions available for this category.</p>
 }
 *@
+
+
+
+
+@model Question
+
+@{
+    ViewData["Title"] = "Quiz Question";
+    int questionIndex = (int)ViewBag.QuestionIndex;
+    int totalQuestions = (int)ViewBag.TotalQuestions;
+    int categoryId = (int)ViewBag.CategoryId;
+}
+
+<h3>Question @((questionIndex + 1)) of @totalQuestions</h3>
+<p><strong>@Model.Text</strong></p>
+
+<form asp-action="SubmitAnswer" method="post">
+    <input type="hidden" name="questionId" value="@Model.QuestionId" />
+    <input type="hidden" name="categoryId" value="@categoryId" />
+    <input type="hidden" name="questionIndex" value="@questionIndex" />
+<div class="row">
+
+    @foreach (var answer in Model.Answers)
+    {
+        <div class="col">
+            <input type="radio" name="selectedAnswerId" value="@answer.AnswerId" required />
+            <label name="selectedAnswerId">@answer.Text</label>
+        </div>
+    }
+</div>
+
+    <button type="submit" class="btn btn-success mt-4">Next</button>
+</form>

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizDishtv.Data;
 
@@ -10,9 +11,11 @@ using QuizDishtv.Data;
 namespace QuizDishtv.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    partial class QuizDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250418093517_Second8")]
+    partial class Second8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,8 +83,6 @@ namespace QuizDishtv.Migrations
 
                     b.HasKey("QuestionId");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Questions");
                 });
 
@@ -92,6 +93,9 @@ namespace QuizDishtv.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Score")
                         .HasColumnType("int");
@@ -139,18 +143,22 @@ namespace QuizDishtv.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("QuestionId")
+                    b.Property<int>("QuizQuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuizQuestionsQuestionId")
                         .HasColumnType("int");
 
                     b.Property<int>("SelectedAnswerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("QuizQuestionsQuestionId");
 
                     b.HasIndex("SelectedAnswerId");
 
@@ -159,22 +167,13 @@ namespace QuizDishtv.Migrations
 
             modelBuilder.Entity("QuizDishtv.Models.Answer", b =>
                 {
-                    b.HasOne("QuizDishtv.Models.Question", "Questions")
+                    b.HasOne("QuizDishtv.Models.Question", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Questions");
-                });
-
-            modelBuilder.Entity("QuizDishtv.Models.Question", b =>
-                {
-                    b.HasOne("QuizDishtv.Models.Category", null)
-                        .WithMany("Questions")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("QuizDishtv.Models.Result", b =>
@@ -190,9 +189,9 @@ namespace QuizDishtv.Migrations
 
             modelBuilder.Entity("QuizDishtv.Models.UserAnswer", b =>
                 {
-                    b.HasOne("QuizDishtv.Models.Question", "Questions")
+                    b.HasOne("QuizDishtv.Models.Question", "QuizQuestions")
                         .WithMany()
-                        .HasForeignKey("QuestionId")
+                        .HasForeignKey("QuizQuestionsQuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -202,14 +201,9 @@ namespace QuizDishtv.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Questions");
+                    b.Navigation("QuizQuestions");
 
                     b.Navigation("SelectedAnswer");
-                });
-
-            modelBuilder.Entity("QuizDishtv.Models.Category", b =>
-                {
-                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("QuizDishtv.Models.Question", b =>

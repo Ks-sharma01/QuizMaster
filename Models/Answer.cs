@@ -14,6 +14,6 @@ namespace QuizDishtv.Models
 
         [ForeignKey("Question")]    
         public int QuestionId { get; set; }
-        public Question Question { get; set; }
+        public Question Questions { get; set; }
     }
 }

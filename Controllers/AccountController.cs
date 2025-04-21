@@ -98,9 +98,10 @@ namespace QuizDishtv.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Email, user.UserEmail),
-                    new Claim("UserId", user.UserId.ToString())
+                    new Claim("Userid", user.UserId.ToString())
 
                 };
+
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties();
 
