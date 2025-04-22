@@ -42,10 +42,10 @@
         @foreach (var answer in Model)
         {
             <tr>
-                <td>@answer.Questions.Text</td>
+                <td>@answer.Question.Text</td>
                 <td>@answer.SelectedAnswer.Text</td>
                 <td>
-                    @if (answer.SelectedAnswer.IsCorrect)
+                    @if(answer.SelectedAnswer.IsCorrect)
                     {
                         <span style="color: green;">Correct ✅</span>
                     }

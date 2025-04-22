@@ -7,13 +7,13 @@ using QuizDishtv.Data;
 using QuizDishtv.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using System.Security.Cryptography.Xml;
 
 namespace QuizDishtv.Controllers
 {
     public class QuizController : Controller
     {
         private readonly QuizDbContext _context;
-        //private readonly UserManager<IdentityUser> _userManager;
 
         public QuizController(QuizDbContext context)
         {
@@ -276,7 +276,7 @@ namespace QuizDishtv.Controllers
             var questions = _context.Questions
                 .Include(q => q.Answers)
                 .Where(q => q.CategoryId == categoryId).ToList();
-            if(questionIndex >= questions.Count)
+            if (questionIndex >= questions.Count)
             {
                 return RedirectToAction("ShowResult", new { categoryId });
             }
@@ -286,44 +286,109 @@ namespace QuizDishtv.Controllers
             ViewBag.QuestionIndex = questionIndex;
             ViewBag.TotalQuestions = questions.Count;
 
-            return View(question);
+            return View(question);     
         }
 
         [Authorize]
         [HttpPost]
         public IActionResult SubmitAnswer(int categoryId, int questionId, int selectedAnswerId, int questionIndex)
         {
-            //var userId = HttpContext.Session.GetString("UserId");
-            var userId = int.Parse(User.FindFirst("UserId")?.Value);
+            //var userId = int.Parse(User.FindFirst("UserId")?.Value);
+            var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
 
-            var existing = _context.UserAnswers.Where(x => x.UserId == userId && x.QuestionId == questionId).FirstOrDefault();
+
+            var existing = _context.UserAnswer.Where(x => x.UserId == userId && x.QuestionId == questionId).FirstOrDefault();
 
             if (existing == null)
             {
-                var userAnswer = new UserAnswer
+                 existing = new UserAnswer
                 {
                     UserId = userId,
                     QuestionId = questionId,
                     SelectedAnswerId = selectedAnswerId,
+                    CategoryId = categoryId
                 };
-                _context.UserAnswers.Add(userAnswer);
+                _context.UserAnswer.Add(existing);
                 _context.SaveChanges();
             }
-            return RedirectToAction("StartQuiz", new { categoryId, questionIndex = questionIndex + 1 });
+            else
+            {
+                existing.SelectedAnswerId = selectedAnswerId;
+                _context.UserAnswer.Update(existing);
+            }
+            _context.SaveChanges();
+                return RedirectToAction("StartQuiz", new { categoryId, questionIndex = questionIndex + 1 });
         }
 
         public IActionResult ShowResult (int categoryId)
         {
-            var userId = int.Parse(User.FindFirst("UserId")?.Value);
-            var answers = _context.UserAnswers
+            //var userId = int.Parse(User.FindFirst("UserId")?.Value);
+            //var answers = _context.UserAnswer
+            //    .Include(ua => ua.SelectedAnswer.Text)
+            //    .Include(ua => ua.Question.QuestionId)
+            //    .Include(ua => ua.Category.Name)
+            //    .Where(ua => ua.UserId == userId && ua.Question.CategoryId == categoryId).ToList();
+            //var result = _context.Results.Where(x => x.CategoryId == categoryId && x.UserId == userId).FirstOrDefault();
+            //int score = answers.Count(a => a.SelectedAnswer.IsCorrect);
+            //if(score != null)
+            //{
+            //     result = new Result { 
+            //         Score = score,
+            //         CategoryId = categoryId,
+            //         UserId = userId,
+            //         AttemptedOn = DateTime.Now,
+            //     };
+            //}
+            //_context.Results.Add(result);
+            //_context.SaveChanges();
+            //ViewBag.Score = score;
+            //ViewBag.Total = answers.Count;
+
+            //return View(answers);
+
+        
+            //int userId = int.Parse(User.FindFirstValue("UserId"));
+            var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
+
+
+            var answers = _context.UserAnswer
                 .Include(ua => ua.SelectedAnswer)
-                .Include(ua => ua.Questions)
-                .Where(ua => ua.UserId == userId && ua.Questions.CategoryId == categoryId).ToList();
+                .Include(ua => ua.Question)
+                .Include(ua => ua.Category)
+                .Where(ua => ua.UserId == userId && ua.Question.CategoryId == categoryId)
+                .ToList();
             int score = answers.Count(a => a.SelectedAnswer.IsCorrect);
+
+            // Check if result already exists
+            var result = _context.Results
+                .FirstOrDefault(x => x.CategoryId == categoryId && x.UserId == userId);
+
+            if (result == null)
+            {
+                result = new Result
+                {
+                    Score = score,
+                    CategoryId = categoryId,
+                    UserId = userId,
+                    AttemptedOn = DateTime.Now
+                };
+                _context.Results.Add(result);
+            }
+            else
+            {
+                result.Score = score;
+                result.AttemptedOn = DateTime.Now;
+                _context.Results.Update(result);
+            }
+            _context.SaveChanges();
+
             ViewBag.Score = score;
             ViewBag.Total = answers.Count;
+
             return View(answers);
         }
+
+        
 
         //*************
 
@@ -369,17 +434,42 @@ namespace QuizDishtv.Controllers
             return View(subject);
         }
         
-        public IActionResult Profile(QuizViewModel u)
+        public IActionResult Profile()
         {
-            var userIdClaim = User.FindFirst("UserId");
-            if (userIdClaim == null)
+            //var userId = int.Parse(User.FindFirstValue("UserId"));
+            var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
+
+            if (userId == null)
             {
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Account");
             }
-            var userId = int.Parse(userIdClaim.Value);
-            var user = _context.Users.FirstOrDefault(x => x.UserId == userId);
-            
-            return View(user);
+            var user = _context.Users.Find(userId);
+            if (user == null)
+            {
+                return NotFound("User Not Found");
+            }
+            var quizAttempts = _context.Results.Include(a => a.Category)
+                .Where(a => a.UserId == userId)
+                .OrderByDescending(a => a.AttemptedOn).ToList();
+            if(quizAttempts == null)
+            {
+                return NotFound("No Quiz Attempts");
+            }
+            var viewModel = new ResultViewModel
+            {
+                Username = user.UserName,
+                Email = user.UserEmail,
+                QuizScores = quizAttempts.Select(a => new QuizScoreDto
+                {
+                    QuizTitle = a.Category.Name,
+                    Score = a.Score,
+                    AttemptedOn = a.AttemptedOn,
+
+                }).ToList()
+            };
+            //int total = (int)TempData["Total"];
+           
+            return View(viewModel);
 
         }
     }

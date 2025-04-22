@@ -12,10 +12,16 @@ namespace QuizDishtv.Models
 
         [ForeignKey("Question")]
         public int QuestionId { get; set; }
-        public Question Questions { get; set; }
+        public Question Question { get; set; }
 
         [ForeignKey("Answer")]
         public int SelectedAnswerId { get; set; }
         public Answer SelectedAnswer { get; set; }
+
+        [ForeignKey("Category")]
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
+
+
     }
 }

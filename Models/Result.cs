@@ -5,15 +5,13 @@ namespace QuizDishtv.Models
 {
     public class Result
     {
-        [Key]
         public int Id { get; set; }
-
-        public int Score { get; set; }
-
         public int UserId { get; set; }
+        public int CategoryId { get; set; }
+        public int Score { get; set; }
+        public DateTime AttemptedOn { get; set; }
 
-
-        //public Category Category { get; set; }
-        public User Users { get; set; }
+        public User User { get; set; }
+        public Category Category { get; set; }
     }
 }

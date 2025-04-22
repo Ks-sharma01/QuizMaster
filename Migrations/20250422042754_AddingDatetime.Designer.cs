@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizDishtv.Data;
 
@@ -11,9 +12,11 @@ using QuizDishtv.Data;
 namespace QuizDishtv.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    partial class QuizDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422042754_AddingDatetime")]
+    partial class AddingDatetime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,28 +89,6 @@ namespace QuizDishtv.Migrations
                     b.ToTable("Questions");
                 });
 
-            modelBuilder.Entity("QuizDishtv.Models.QuizAttempt", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("AttemptedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("QuizAttempt");
-                });
-
             modelBuilder.Entity("QuizDishtv.Models.Result", b =>
                 {
                     b.Property<int>("Id")
@@ -176,9 +157,6 @@ namespace QuizDishtv.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("QuizAttemptId")
-                        .HasColumnType("int");
-
                     b.Property<int>("SelectedAnswerId")
                         .HasColumnType("int");
 
@@ -190,8 +168,6 @@ namespace QuizDishtv.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("QuestionId");
-
-                    b.HasIndex("QuizAttemptId");
 
                     b.HasIndex("SelectedAnswerId");
 
@@ -251,10 +227,6 @@ namespace QuizDishtv.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("QuizDishtv.Models.QuizAttempt", null)
-                        .WithMany("Answers")
-                        .HasForeignKey("QuizAttemptId");
-
                     b.HasOne("QuizDishtv.Models.Answer", "SelectedAnswer")
                         .WithMany()
                         .HasForeignKey("SelectedAnswerId")
@@ -274,11 +246,6 @@ namespace QuizDishtv.Migrations
                 });
 
             modelBuilder.Entity("QuizDishtv.Models.Question", b =>
-                {
-                    b.Navigation("Answers");
-                });
-
-            modelBuilder.Entity("QuizDishtv.Models.QuizAttempt", b =>
                 {
                     b.Navigation("Answers");
                 });

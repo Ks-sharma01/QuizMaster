@@ -283,9 +283,6 @@ else
 }
 *@
 
-
-
-
 @model Question
 
 @{
@@ -295,20 +292,20 @@ else
     int categoryId = (int)ViewBag.CategoryId;
 }
 
-<h3>Question @((questionIndex + 1)) of @totalQuestions</h3>
+<h3 class="mt-2">Question @((questionIndex + 1)) of @totalQuestions</h3>
 <p><strong>@Model.Text</strong></p>
 
 <form asp-action="SubmitAnswer" method="post">
     <input type="hidden" name="questionId" value="@Model.QuestionId" />
     <input type="hidden" name="categoryId" value="@categoryId" />
     <input type="hidden" name="questionIndex" value="@questionIndex" />
-    <div class="row">
+    <div class="d-flex flex-sm-wrap">
 
         @foreach (var answer in Model.Answers)
         {
-            <div class="col">
-                <input type="radio" name="selectedAnswerId" value="@answer.AnswerId" required />
-                <label name="selectedAnswerId">@answer.Text</label>
+            <div class="w-50 d-flex align-items-center">
+                <input type="radio" name="selectedAnswerId" value="@answer.AnswerId" class="mb-2" required />
+                <label name="selectedAnswerId" class="mx-2 mb-2">@answer.Text</label>
             </div>
         }
     </div>
@@ -318,7 +315,7 @@ else
     }
     else
     {
-    <button type="submit" class="btn btn-success mt-4">Next</button>
+        <button type="submit" class="btn btn-success mt-4">Next</button>
         
     }
 </form>
