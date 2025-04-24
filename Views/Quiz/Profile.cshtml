@@ -35,6 +35,7 @@
                         <td>@quiz.QuizTitle</td>
                         <td>@quiz.Score</td>
                         <td>@quiz.AttemptedOn.ToString("yyyy-MM-dd hh:mm tt")</td>
+                        <td><a asp-controller="Quiz" asp-action="ShowReport">Show Report</a></td>
                     </tr>
                 }
             </tbody>

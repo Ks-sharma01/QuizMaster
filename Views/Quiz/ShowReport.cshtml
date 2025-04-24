@@ -1,4 +1,6 @@
-﻿ @model QuizDishtv.Models.QuizViewModel 
+﻿ @*
+
+ @model QuizDishtv.Models.QuizViewModel 
 @{ 
     ViewData["Title"] = "Report"; 
 
@@ -33,6 +35,7 @@
 <a asp-action="SelectQuiz" class="btn btn-danger">Re-Attempt</a> 
  </table> 
 
+ *@
 
 @* @model QuizDishtv.Models.QuizViewModel 
 @* @{ 
@@ -115,3 +118,40 @@
 @*             </tbody> *@
 @*         </table> *@
 @*     </div> *@
+
+@model List<QuizDishtv.Models.UserAnswer>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Your Answer</th>
+            <th>Correct?</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var answer in Model)
+        {
+            <tr>
+                <td>@answer.Question.Text</td>
+                <td>@answer.SelectedAnswer.Text</td>
+                <td>@answer.SelectedAnswer.IsCorrect</td>
+                <td>
+                    @if (answer.SelectedAnswer.IsCorrect)
+                    {
+                        <span style="color: green;">Correct ✅</span>
+                    }
+                    else
+                    {
+                        <span style="color: red;">Wrong ❌</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+<a asp-controller="Quiz" asp-action="Categories" class="btn btn-success"> &#11013; Attempt Again</a>
+
+
