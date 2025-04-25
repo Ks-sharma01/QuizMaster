@@ -1,0 +1,32 @@
+﻿@model List<QuizDishtv.Models.User>
+
+<h2>Admin Dashboard</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Current Role</th>
+            <th>Change Role</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.UserName</td>
+            <td>@user.Role</td>
+            <td>
+                <form method="post" asp-action="AssignRole">
+                    <input type="hidden" name="userId" value="@user.UserId" />
+                        <select name="role">
+                            <option value="User" selected="@(user.Role == "User")">User</option>
+                            <option value="Admin" selected="@(user.Role == "Admin")">Admin</option>
+                        </select>
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

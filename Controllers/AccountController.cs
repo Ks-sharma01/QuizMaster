@@ -7,6 +7,7 @@ using QuizDishtv.Data;
 using QuizDishtv.Models;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuizDishtv.Controllers
 {
@@ -76,7 +77,8 @@ namespace QuizDishtv.Controllers
                 u.UserPassword = HashPassword(u.UserPassword);
                 _context.Users.Add(u);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Login");
+             
+                return RedirectToAction("Login", "Account");
             }
             return View(u);
         }
@@ -98,6 +100,7 @@ namespace QuizDishtv.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Email, user.UserEmail),
+                    new Claim(ClaimTypes.Role, user.Role),
                     new Claim("Userid", user.UserId.ToString())
 
                 };
@@ -110,8 +113,8 @@ namespace QuizDishtv.Controllers
                        new ClaimsPrincipal(claimsIdentity), authProperties);
 
                     return RedirectToAction("Index", "Home");
-
                 }
+
 
             }
             return View();

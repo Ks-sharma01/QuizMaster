@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
-
 
 namespace QuizDishtv.Controllers
 {
@@ -18,13 +17,13 @@ namespace QuizDishtv.Controllers
             _context = context;
         }
 
-        [Authorize]
+        [Authorize(Roles ="User")]
         public IActionResult Categories()
         {
             var categories = _context.Category.ToList();
             return View(categories);
         }
-        
+
         [Authorize]
         public IActionResult StartQuiz(int categoryId, int questionIndex = 0)
         {
@@ -41,7 +40,7 @@ namespace QuizDishtv.Controllers
             ViewBag.QuestionIndex = questionIndex;
             ViewBag.TotalQuestions = questions.Count;
 
-            return View(question);     
+            return View(question);
         }
 
         [Authorize]
@@ -53,7 +52,7 @@ namespace QuizDishtv.Controllers
 
             if (existing == null)
             {
-                 existing = new UserAnswer
+                existing = new UserAnswer
                 {
                     UserId = userId,
                     QuestionId = questionId,
@@ -72,7 +71,7 @@ namespace QuizDishtv.Controllers
             return RedirectToAction("StartQuiz", new { categoryId, questionIndex = questionIndex + 1 });
         }
 
-        public IActionResult ShowResult (int categoryId)
+        public IActionResult ShowResult(int categoryId)
         {
             var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
             var answers = _context.UserAnswer
@@ -107,18 +106,18 @@ namespace QuizDishtv.Controllers
             _context.SaveChanges();
 
             ViewBag.Score = score;
-            ViewBag.Total = answers.Count;
-          
+            TempData["Total"] = answers.Count;
+
             return View(answers);
         }
 
         [Authorize]
         public IActionResult SelectQuiz()
         {
-            var subject = _context.Category.Select(p => new {p.CategoryId, p.Name});
+            var subject = _context.Category.Select(p => new { p.CategoryId, p.Name });
             return View(subject);
         }
-        
+
         public IActionResult Profile()
         {
             var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
@@ -131,10 +130,11 @@ namespace QuizDishtv.Controllers
             var quizAttempts = _context.Results.Include(a => a.Category)
                 .Where(a => a.UserId == userId)
                 .OrderByDescending(a => a.AttemptedOn).ToList();
-            if(quizAttempts == null)
+            if (quizAttempts == null)
             {
                 return NotFound("No Quiz Attempts");
             }
+
             var viewModel = new ResultViewModel
             {
                 Username = user.UserName,
@@ -147,9 +147,10 @@ namespace QuizDishtv.Controllers
 
                 }).ToList()
             };
-           
+
             return View(viewModel);
 
         }
+    
     }
 }

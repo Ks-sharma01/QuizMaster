@@ -1,10 +1,10 @@
-﻿
- @model List<UserAnswer>
+﻿@model List<UserAnswer>
 
 @{
     ViewData["Title"] = "Your Quiz Result";
     int score = (int)ViewBag.Score;
-    int total = (int)ViewBag.Total;
+    int total = (int)TempData["Total"];
+    TempData.Keep("Total");
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -22,15 +22,15 @@
     <tbody>
         @foreach (var answer in Model)
         {
-            var correctAnswer = answer.Question.Answers.FirstOrDefault(a => a.IsCorrect)?.Text;
+            var correctAnswer = answer.Question.Answers.FirstOrDefault(a => a.IsCorrect);
             <tr>
                 <td>@answer.Question.Text</td>
                 <td>@answer.SelectedAnswer.Text</td>
-                <td>@correctAnswer</td>
+                <td>@correctAnswer?.Text</td>
                 <td>
                     @if(answer.SelectedAnswer.IsCorrect)
                     {
-                        <span style="color: green;">Correct ✅ &#128075;</span>
+                        <span style="color: green;">Correct ✅</span>
                     }
                     else
                     {
