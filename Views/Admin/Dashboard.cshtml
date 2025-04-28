@@ -1,32 +1,15 @@
-﻿@model List<QuizDishtv.Models.User>
+﻿@{
+    ViewBag.Title = "Dashboard";
+}
 
-<h2>Admin Dashboard</h2>
+<h3 class="mt-2 text-primary"><strong>Dashboard</strong></h3>
+<div class="row gap-3 mt-2 text-center">
+    <div class="col shadow p-4 text-center">
+        <a asp-controller="Admin" asp-action="SelectCategory" class="fs-4">Leaderboard</a>
+    </div>
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Current Role</th>
-            <th>Change Role</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var user in Model)
-    {
-        <tr>
-            <td>@user.UserName</td>
-            <td>@user.Role</td>
-            <td>
-                <form method="post" asp-action="AssignRole">
-                    <input type="hidden" name="userId" value="@user.UserId" />
-                        <select name="role">
-                            <option value="User" selected="@(user.Role == "User")">User</option>
-                            <option value="Admin" selected="@(user.Role == "Admin")">Admin</option>
-                        </select>
-                    <button type="submit">Update</button>
-                </form>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+    <div class="col shadow p-4 text-center">
+        <a asp-controller="Admin" asp-action="AssignRole" class="fs-4">Assign Role</a>
+    </div>
+
+</div>

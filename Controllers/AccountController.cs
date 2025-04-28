@@ -75,6 +75,7 @@ namespace QuizDishtv.Controllers
                 }
                 
                 u.UserPassword = HashPassword(u.UserPassword);
+                u.Role = "User";
                 _context.Users.Add(u);
                 await _context.SaveChangesAsync();
              
