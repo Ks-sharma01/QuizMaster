@@ -13,6 +13,9 @@
          margin: 0; 
          padding: 0; 
          background: #f4f4f9; 
+         display: flex;
+         min-height: 100vh;
+         flex-direction: column;
          } 
 
          header { 
@@ -23,11 +26,11 @@
          text-align: center; 
          } 
 
-         footer { 
+         .footer { 
          background: #6c63ff; 
          color: white;  
          text-align: center; 
-         padding: 4px;   
+         padding: 2px;   
          font-size: 14px; 
          }  
 
@@ -35,7 +38,19 @@
          color: #6c63ff; 
          text-decoration: none; 
          font-weight: bold; 
-         } 
+         }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        main.container {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 50px;
+        }
      </style> 
 </head>
 <body>
@@ -73,7 +88,6 @@
                             </li>
                         }
 
-
                     </ul>
 
                     @if (User.Identity.IsAuthenticated)
@@ -90,16 +104,15 @@
             </div>
         </nav>
     </header>
-        <main role="main" class="container mt-4">
+        <main role="main" class="container">
             @RenderBody()
         </main>
     
-
-    <footer class="border-top footer text-muted">
-        <div class="container text-center text-white">
-            &copy; @DateTime.Now.Year - QuizDishtv <a class="text-white text-decoration-underline" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+     <footer class="border-top footer text-muted "> 
+          <div class="container text-center text-white">  
+             &copy; @DateTime.Now.Year - QuizDishtv <a class="text-white text-decoration-underline" asp-controller="Home" asp-action="Privacy">Privacy</a>
+          </div>  
+     </footer> 
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
