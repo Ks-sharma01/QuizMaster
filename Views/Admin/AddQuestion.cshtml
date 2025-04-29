@@ -1,0 +1,66 @@
+﻿@model QuizDishtv.Models.QuestionInputViewModel
+
+@{
+    ViewBag.Title = "Add Question";
+}
+<h2>Add Question</h2>
+
+<form asp-controller="Admin" asp-action="AddQuestion" method="post" class="mb-4">
+    <div>
+        <label>Question Text</label>
+        <input asp-for="Text" class="form-control" required />
+    </div>
+
+    <div> 
+        <label>Category Id</label> 
+        <input asp-for="CategoryId" class="form-control" required /> 
+    </div> 
+
+    <h4>Answers</h4>
+
+    <div id="answersList" style="">
+        <div class="answer-item mb-2 d-flex align-items-center gap-2">
+            <input name="Answers[0].Text" class="form-control w-75" placeholder="Option[1]" required />
+            <input type="checkbox" name="Answers[0].IsCorrect" value="true" /> Correct
+            <button type="button" class="btn btn-danger btn-sm remove-answer">Remove</button>
+        </div>
+    </div>
+   
+        
+    <div class="d-flex gap-2">
+
+        <button type="button" id="addAnswer" class="btn btn-success" style="margin-bottom: 60px">Add Answer</button>
+
+
+        <button type="submit" class="btn btn-primary" style="margin-bottom: 60px">Save</button>
+    </div>
+    
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+        let answerIndex = 1;
+        $('#addAnswer').click(function () {
+
+                var newAnswer = `
+                    <div class="answer-item mb-2 d-flex align-items-center gap-2">
+                        <input name="Answers[${answerIndex}].Text" class="form-control w-75" placeholder="Option[${(answerIndex+1)}]" required />
+                        <input type="checkbox" name="Answers[${answerIndex}].IsCorrect" value="true" /> Correct
+                        <button type="button" class="btn btn-danger btn-sm remove-answer">Remove</button>
+                    </div>`
+                 
+        
+                $('#answersList').append(newAnswer);
+                answerIndex++;
+               
+            
+            });
+            $('#answersList').on('click', '.remove-answer', function () {
+                $(this).parent().remove();
+            });
+        });
+    </script>
+}

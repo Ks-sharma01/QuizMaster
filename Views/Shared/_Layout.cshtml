@@ -7,38 +7,40 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/QuizDishtv.styles.css" asp-append-version="true" />
-    <style>
-        body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background: #f4f4f9;
-        }
+     <style> 
+         body { 
+         font-family: Arial, sans-serif; 
+         margin: 0; 
+         padding: 0; 
+         background: #f4f4f9; 
+         } 
 
-        header {
-        background: #6c63ff;
-        color: white;
-        padding: 30px;
-        padding-top: 0;
-        text-align: center;
-        }
+         header { 
+         background: #6c63ff; 
+         color: white; 
+         padding: 30px; 
+         padding-top: 0; 
+         text-align: center; 
+         } 
 
-        .footer {
-        background: #6c63ff;
-        color: white; 
-        text-align: center;
-        padding: 4px;  
-        font-size: 14px;
-        } 
+         footer { 
+         background: #6c63ff; 
+         color: white;  
+         text-align: center; 
+         padding: 4px;   
+         font-size: 14px; 
+         }  
 
-        a {
-        color: #6c63ff;
-        text-decoration: none;
-        font-weight: bold;
-        }
-    </style>
+         a { 
+         color: #6c63ff; 
+         text-decoration: none; 
+         font-weight: bold; 
+         } 
+     </style> 
 </head>
 <body>
+    <div class="wrapper">
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-6">
             <div class="container-fluid">
@@ -49,12 +51,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                       
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
@@ -65,8 +62,14 @@
 
                         @if (User.IsInRole("User"))
                         {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
                             <li>
-                                <a class="nav-link" asp-controller="Quiz" asp-action="SelectQuiz">Start Quiz</a>
+                                <a class="nav-link" asp-controller="Quiz" asp-action="Categories">Start Quiz</a>
                             </li>
                         }
 
@@ -87,18 +90,17 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="container mt-4">
             @RenderBody()
         </main>
-    </div>
     
 
     <footer class="border-top footer text-muted">
         <div class="container text-center text-white">
-            &copy; 2025 - QuizDishtv <a class="text-white text-decoration-underline" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @DateTime.Now.Year - QuizDishtv <a class="text-white text-decoration-underline" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AspNetCoreGeneratedDocument;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
@@ -11,15 +13,17 @@ namespace QuizDishtv.Controllers
     public class AdminController : Controller
     {
         private readonly QuizDbContext _context;
+        private readonly IQuizService _quizService;
 
-        public AdminController(QuizDbContext context)
+        public AdminController(QuizDbContext context, IQuizService quizService)
         {
             _context = context;
+            _quizService = quizService;
         }
 
         public IActionResult Dashboard()
-        {
-            return View();
+        { 
+            return View(); 
         }
 
         public IActionResult Leaderboard(int categoryId)
@@ -57,9 +61,30 @@ namespace QuizDishtv.Controllers
             if (user != null)
             {
                 user.Role = role;
+                _context.Update(user);
                 _context.SaveChanges();
             }
-            return View(user);
+            return RedirectToAction("Dashboard", "Admin");
         }
+        public IActionResult AddQuestion()
+        {
+            return View(new QuestionInputViewModel 
+            { Answers = new List<AnswerInputViewModel> 
+              { new AnswerInputViewModel() 
+               } 
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddQuestion(QuestionInputViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _quizService.AddQuestionAsync(model);
+                return RedirectToAction("AddQuestion");
+            }
+            return View(model);
+        }
+
     }
 }

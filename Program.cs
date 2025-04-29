@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuizDishtv.Data;
-using QuizDishtv.Models;
-using System;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDistributedMemoryCache();
@@ -28,13 +26,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<QuizDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IQuizService, QuizService>();
 
-//builder.Services.AddDefaultIdentity<User>(options =>
-//{
-//    options.SignIn.RequireConfirmedAccount = false;
-//})
-//.AddRoles<IdentityRole>() // Add this line
-//.AddEntityFrameworkStores<QuizDbContext>();
 builder.Services.AddMvc();
 
 var app = builder.Build();
@@ -54,38 +47,10 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-//using (var scope = app.Services.CreateScope())
-//{
-//    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-//    string[] roles = ["Admin", "User"];
-
-//    foreach (var role in roles)
-//    {
-//        if (!await roleManager.RoleExistsAsync(role))
-//        {
-//            await roleManager.CreateAsync(new IdentityRole(role));
-//        }
-//    }
-
-//    // Optional: Create Admin User
-//    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-//    string adminEmail = "admin@quiz.com";
-//    string adminPassword = "Admin@123";
-
-//    if (await userManager.FindByEmailAsync(adminEmail) == null)
-//    {
-//        var adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
-//        var result = await userManager.CreateAsync(adminUser, adminPassword);
-//        if (result.Succeeded)
-//        {
-//            await userManager.AddToRoleAsync(adminUser, "Admin");
-//        }
-//    }
-//    //}
 
     app.Run();
 

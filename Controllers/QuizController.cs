@@ -82,7 +82,6 @@ namespace QuizDishtv.Controllers
                 .Where(ua => ua.UserId == userId && ua.Question.CategoryId == categoryId)
                 .ToList();
             int score = answers.Count(a => a.SelectedAnswer.IsCorrect);
-            // Check if result already exists
             var result = _context.Results
                 .FirstOrDefault(x => x.CategoryId == categoryId && x.UserId == userId);
 
