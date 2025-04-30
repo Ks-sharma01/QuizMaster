@@ -52,42 +52,58 @@
         }
 
         .sidebar{
-            width: 200px;
-            background-color: #6c63ff;
-            color: white;
-            transition: all 0.3s ease;
-            min-height: 80vh;
-            /* border-top: 0.5px solid white; */
-           
-           
+        width: 200px;
+        background-color: #6c63ff;
+        color: white;
+        transition: all 0.3s ease;
+        min-height: 80vh;
+        /* border-top: 0.5px solid white; */
+
+
         }
         .sidebar a{
-            display: block;
-            color: white;
-            padding: 12px 20px;
-            text-decoration: none;
-           
+        display: block;
+        color: white;
+        padding: 12px 20px;
+        text-decoration: none;
+        margin-bottom: 3px
+
         }
-         .sidebar a:hover {
-             background-color: darkslateblue;
+        .sidebar a:hover {
+        background-color: darkslateblue;
         }
 
         .content {
-            flex: 1;
-            padding: 20px;
-            padding-top: 0;
-            overflow-y: auto;
-            height: calc(100vh - 120px); 
+        flex: 1;
+        padding: 20px;
+        padding-top: 0;
+        overflow-y: auto;
+        height: calc(100vh - 120px); 
+        }
+
+        .sidebar a.active,
+        .sidebar a.hovered {
+        background-color: darkslateblue;
         }
     </style> 
 </head>
 <body>
     <div class="wrapper">
-       
+
         <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-6">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QuizMaster</a>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-6">
+                <div class="container-fluid">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a class="navbar-brand" asp-area="" asp-controller="Admin" asp-action="SelectCategory">QuizMaster</a>
+
+                    }
+                    @if (User.IsInRole("User"))
+                    {
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QuizMaster</a>
+                        
+                    }
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -98,7 +114,7 @@
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="SelectCategory">Dashboard</a>
                             </li>
                         }
 
@@ -137,9 +153,12 @@
             {
                 <div id="sidebar" class="sidebar">
             
-                    <a asp-controller="Admin" asp-action="SelectCategory">Leaderboard</a>
-                    <a asp-controller="Admin" asp-action="AssignRole">Roles</a>
-                    <a asp-controller="Admin" asp-action="Questions">Questions</a>
+                    <a asp-controller="Admin" asp-action="SelectCategory"
+                       class="@(ViewContext.RouteData.Values["action"].ToString() == "SelectCategory" ? "hovered" : "")">Leaderboard</a>
+                    <a asp-controller="Admin" asp-action="AssignRole"
+                       class="@(ViewContext.RouteData.Values["action"].ToString() == "AssignRole" ? "hovered" : "")">Roles</a>
+                    <a asp-controller="Admin" asp-action="Questions"
+                       class="@(ViewContext.RouteData.Values["action"].ToString() == "Questions" ? "hovered" : "")">Questions</a>
                     
                 </div>
             }

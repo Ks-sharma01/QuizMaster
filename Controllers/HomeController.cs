@@ -19,7 +19,6 @@ namespace QuizDishtv.Controllers
         {
             return View();
         }
-
         
         public IActionResult Privacy()
         {

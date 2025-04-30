@@ -22,11 +22,6 @@ namespace QuizDishtv.Controllers
             _quizService = quizService;
         }
 
-        public IActionResult Dashboard()
-        { 
-            return View(); 
-        }
-
         public IActionResult Leaderboard(int categoryId)
         {
             var LeaderboardData = _context.Results.Where(x => x.CategoryId == categoryId)
@@ -78,14 +73,12 @@ namespace QuizDishtv.Controllers
             });
         }
 
-        public async Task<IActionResult> Questions(FetchQuestionsViewModel model)
+        public async Task<IActionResult> Questions()
         {
-            // Execute the stored procedure and fetch raw data
             var rawData = await _context.Set<QuestionAnswerDto>()
                 .FromSqlRaw("EXEC GetAllQuestionsWithAnswers")
                 .ToListAsync();
 
-            // Manually map raw data to a list of QuestionViewModel
             var groupedQuestions = rawData
                 .GroupBy(q => new { q.QuestionId, q.QuestionText, q.CategoryId })
                 .Select(g => new FetchQuestionsViewModel
@@ -101,7 +94,7 @@ namespace QuizDishtv.Controllers
                     }).ToList()
                 }).ToList();
 
-            return View(groupedQuestions); // Pass the grouped questions to the view
+            return View(groupedQuestions); 
         }
 
         [HttpPost]

@@ -112,7 +112,11 @@ namespace QuizDishtv.Controllers
                     await HttpContext.SignInAsync(
                        CookieAuthenticationDefaults.AuthenticationScheme,
                        new ClaimsPrincipal(claimsIdentity), authProperties);
-                   
+                   if(user.Role == "Admin")
+                    {
+                        return RedirectToAction("SelectCategory", "Admin");
+
+                    }
                     return RedirectToAction("Index", "Home");
                 }
 

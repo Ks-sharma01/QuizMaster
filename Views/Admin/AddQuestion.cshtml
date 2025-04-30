@@ -22,8 +22,25 @@
          <div class="answer-item mb-2 d-flex align-items-center gap-2"> 
              <input name="Answers[0].Text" class="form-control w-60" placeholder="Option[1]" required /> 
              <input type="checkbox" name="Answers[0].IsCorrect" value="true" /> Correct 
-             <button type="button" class="btn btn-danger btn-sm remove-answer">Remove</button>
-         </div> 
+            <div style="width: 87px"></div>
+        </div>
+        <div class="answer-item mb-2 d-flex align-items-center gap-2">
+            <input name="Answers[1].Text" class="form-control w-60" placeholder="Option[2]" required />
+            <input type="checkbox" name="Answers[1].IsCorrect" value="true" /> Correct
+            <div style="width: 87px"></div>
+        </div>
+        <div class="answer-item mb-2 d-flex align-items-center gap-2">
+            <input name="Answers[2].Text" class="form-control w-60" placeholder="Option[3]" required />
+            <input type="checkbox" name="Answers[2].IsCorrect" value="true" /> Correct
+            <div style="width: 87px"></div>
+
+        </div>
+        <div class="answer-item mb-2 d-flex align-items-center gap-2">
+            <input name="Answers[3].Text" class="form-control w-60" placeholder="Option[4]" required />
+            <input type="checkbox" name="Answers[3].IsCorrect" value="true" /> Correct
+            <div style="width: 87px"></div>
+
+        </div>
     </div>
       
     <div class="d-flex gap-2">
@@ -39,7 +56,7 @@
 
     <script>
         $(document).ready(function () {
-        let answerIndex = 1;
+        let answerIndex = 4;
         $('#addAnswer').click(function () {
 
                 var newAnswer = `
