@@ -16,7 +16,7 @@
         <input asp-for="CategoryId" class="form-control" required /> 
     </div> 
 
-    <h4>Answers</h4>
+    <h4>Options</h4>
 
     <div id="answersList">
          <div class="answer-item mb-2 d-flex align-items-center gap-2"> 
@@ -28,7 +28,7 @@
       
     <div class="d-flex gap-2">
 
-        <button type="button" id="addAnswer" class="btn btn-success" style="margin-bottom: 60px">Add Answer</button>
+        <button type="button" id="addAnswer" class="btn btn-success" style="margin-bottom: 60px">Add Option</button>
 
         <button type="submit" class="btn btn-primary" style="margin-bottom: 60px">Save</button>
     </div>
@@ -36,7 +36,6 @@
 </form>
 
 @section Scripts {
-    @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
 
     <script>
         $(document).ready(function () {

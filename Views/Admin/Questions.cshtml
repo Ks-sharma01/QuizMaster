@@ -1,0 +1,45 @@
+﻿@model List<QuizDishtv.ViewModels.FetchQuestionsViewModel>
+@{
+    ViewBag.Title = "Questions";
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Question</th>
+            @for (int i = 1; i <= 4; i++)
+            {
+                <th>Option @i</th>
+            }
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <!-- Display the Question Text -->
+                <td>@item.QuestionText</td>
+
+                <!-- Dynamically display answer options -->
+                @foreach (var answer in item.Options)
+                {
+                    <td>@answer.AnswerText</td>
+                }
+
+                <!-- Fill the remaining cells with empty cells if there are fewer than 4 answers -->
+                @for (int i = item.Options.Count; i < 4; i++)
+                {
+                    <td></td>
+                }
+
+                <!-- Edit & Delete Actions -->
+                <td class="d-flex gap-1">
+                    <a asp-controller="Admin" asp-action="EditQuestion" asp-route-id="@item.QuestionId" class="btn btn-success">Edit</a>
+                    <a asp-controller="Admin" asp-action="DeleteQuestion" asp-route-id="@item.QuestionId" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
+using QuizDishtv.ViewModels;
 using System.Data;
 
 namespace QuizDishtv.Controllers
@@ -69,10 +70,38 @@ namespace QuizDishtv.Controllers
         public IActionResult AddQuestion()
         {
             return View(new QuestionInputViewModel 
-            { Answers = new List<AnswerInputViewModel> 
-              { new AnswerInputViewModel() 
-               } 
+            { 
+                Answers = new List<AnswerInputViewModel> 
+              { 
+                new AnswerInputViewModel() 
+              } 
             });
+        }
+
+        public async Task<IActionResult> Questions(FetchQuestionsViewModel model)
+        {
+            // Execute the stored procedure and fetch raw data
+            var rawData = await _context.Set<QuestionAnswerDto>()
+                .FromSqlRaw("EXEC GetAllQuestionsWithAnswers")
+                .ToListAsync();
+
+            // Manually map raw data to a list of QuestionViewModel
+            var groupedQuestions = rawData
+                .GroupBy(q => new { q.QuestionId, q.QuestionText, q.CategoryId })
+                .Select(g => new FetchQuestionsViewModel
+                {
+                    QuestionId = g.Key.QuestionId,
+                    QuestionText = g.Key.QuestionText,
+                    CategoryId = g.Key.CategoryId,
+                    Options = g.Select(a => new FetchOptionsViewModel
+                    {
+                        AnswerId = a.AnswerId,
+                        AnswerText = a.AnswerText,
+                        IsCorrect = a.IsCorrect
+                    }).ToList()
+                }).ToList();
+
+            return View(groupedQuestions); // Pass the grouped questions to the view
         }
 
         [HttpPost]

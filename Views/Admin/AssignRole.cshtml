@@ -4,9 +4,9 @@
     ViewBag.Title = "Assign Role";
 }
 
-<h2>Assign Role</h2>
+<h3>Assign Role</h3>
 
-<table border="1" class="table table-bordered table-striped">
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>Username</th>
@@ -23,7 +23,7 @@
                 <td>
                     <form method="post" asp-controller="Admin" asp-action="AssignRole">
                         <input type="hidden" name="userId" value="@user.UserId" />
-                        <div class="d-flex gap-2">
+                        <div class="d-flex">
 
                         <select name="role" class="form-select">
                             <option value="User" selected="@(user.Role == "User")">User</option>

@@ -112,7 +112,7 @@ namespace QuizDishtv.Controllers
                     await HttpContext.SignInAsync(
                        CookieAuthenticationDefaults.AuthenticationScheme,
                        new ClaimsPrincipal(claimsIdentity), authProperties);
-
+                   
                     return RedirectToAction("Index", "Home");
                 }
 
