@@ -1,6 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using QuizDishtv.Models;
+using System.Collections.ObjectModel;
 
-namespace QuizDishtv.Models
+namespace QuizDishtv.ViewModels
 {
     public class QuizViewModel
     {

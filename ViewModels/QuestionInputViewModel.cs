@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using QuizDishtv.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace QuizDishtv.Models
+namespace QuizDishtv.ViewModels
 {
     public class QuestionInputViewModel
     {

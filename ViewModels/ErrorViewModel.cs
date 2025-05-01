@@ -1,4 +1,4 @@
-namespace QuizDishtv.Models
+namespace QuizDishtv.ViewModels
 {
     public class ErrorViewModel
     {

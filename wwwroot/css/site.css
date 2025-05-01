@@ -17,5 +17,66 @@ html {
   min-height: 100vh;
 }
 
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f9;
+}
+
+header {
+    background: #6c63ff;
+    color: white;
+    padding: 30px;
+    padding-top: 0;
+    text-align: center;
+}
+
+.footer {
+    background: #6c63ff;
+    color: white;
+    text-align: center;
+    font-size: 15px;
+}
+
+a {
+    color: #6c63ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #6c63ff;
+    color: white;
+    transition: all 0.3s ease;
+    min-height: 80vh;
+    border-top: 0.2px solid white;
+}
+
+    .sidebar a {
+        display: block;
+        color: white;
+        padding: 12px 20px;
+        text-decoration: none;
+        margin-bottom: 3px
+    }
+
+        .sidebar a:hover {
+            background-color: darkslateblue;
+        }
+
+.content {
+    flex: 1;
+    padding: 20px;
+    padding-top: 0;
+    overflow-y: auto;
+    height: calc(100vh - 120px);
+}
+
+.sidebar-link.active {
+    background-color: darkslateblue;
+}
+
 
 

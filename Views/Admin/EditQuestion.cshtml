@@ -19,6 +19,8 @@
     </div>
 
     <h3>Options</h3>
+    
+
     @for(int i = 0; i<Model.editAnswers.Count; i++)
     {
         <div class="form-group">
@@ -26,14 +28,35 @@
             <label>Option</label>
             <input asp-for="@Model.editAnswers[i].Text" class="form-control"/>
             <div class="form-check">
-                <input  asp-for="@Model.editAnswers[i].IsCorrect" class="form-check-input"/>
+                <input asp-for="@Model.editAnswers[i].IsCorrect" class="form-check-input"/>
                 <label class="form-check-label">Is Correct?</label>
-
-
             </div>
 
         </div>
     }
+    
+    @*
+
+    @for (int i = 0; i < Model.editAnswers.Count; i++)
+    {
+        <div class="form-group mb-2">
+            <input type="hidden" asp-for="@Model.editAnswers[i].AnswerId" />
+
+            <label>Option</label>
+            <input asp-for="@Model.editAnswers[i].Text" class="form-control" />
+
+            <div class="form-check">
+                <input type="radio"
+                       name="SelectedCorrectIndex"
+                       class="form-check-input"
+                       value="@i"
+                @(Model.editAnswers[i].IsCorrect ? "checked" : "") />
+                <label class="form-check-label">Is Correct?</label>
+            </div>
+        </div>
+    }
+    *@
+
     <button type="submit" class="btn btn-primary">Save</button>
 
 </form>

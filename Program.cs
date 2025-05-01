@@ -26,7 +26,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<QuizDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-//builder.Services.AddScoped<IQuizService, QuizService>();
 
 builder.Services.AddMvc();
 

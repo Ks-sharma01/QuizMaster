@@ -103,8 +103,8 @@ namespace QuizDishtv.Controllers
             var questionWithCategories = await _context.Questions
                 .Include(q => q.Category)
                 .Include(q => q.Answers).ToListAsync();
-           
 
+            ViewBag.Categories = new SelectList(categories, "CategoryId", "Name");
             return View(questionWithCategories);
         }
 
@@ -175,18 +175,18 @@ namespace QuizDishtv.Controllers
             //return RedirectToAction("AddQuestion");
 
             // Server-side validation
-            if (!model.Answers.Any(a => a.IsCorrect))
-            {
-                ModelState.AddModelError(string.Empty, "At least one answer must be marked as correct.");
-            }
+            //if (!model.Answers.Any(a => a.IsCorrect))
+            //{
+            //    ModelState.AddModelError(string.Empty, "At least one answer must be marked as correct.");
+            //}
 
-            for (int i = 0; i < model.Answers.Count; i++)
-            {
-                if (string.IsNullOrWhiteSpace(model.Answers[i].Text))
-                {
-                    ModelState.AddModelError($"Answers[{i}].Text", $"Option {i + 1} is required.");
-                }
-            }
+            //for (int i = 0; i < model.Answers.Count; i++)
+            //{
+            //    if (string.IsNullOrWhiteSpace(model.Answers[i].Text))
+            //    {
+            //        ModelState.AddModelError($"Answers[{i}].Text", $"Option {i + 1} is required.");
+            //    }
+            //}
 
             //if (!ModelState.IsValid)
             //{
@@ -194,14 +194,13 @@ namespace QuizDishtv.Controllers
             //    model.CategoryList = new SelectList(categories, "CategoryId", "Name");
             //    return View(model);
             //}
-            model.CategoryList = new SelectList(await _context.Category.ToListAsync(), "CategoryId", "Name");
 
             // Insert Question via Stored Procedure
             var parameters = new[]
             {
             new SqlParameter("@Text", model.Text),
             new SqlParameter("@CategoryId", model.CategoryId)
-        };
+            };
 
             await _context.Database.ExecuteSqlRawAsync("EXEC AddQuestion @Text, @CategoryId", parameters);
 

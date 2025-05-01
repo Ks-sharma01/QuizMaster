@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
+using QuizDishtv.ViewModels;
 
 namespace QuizDishtv.Controllers
 {
