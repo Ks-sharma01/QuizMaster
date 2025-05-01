@@ -1,4 +1,6 @@
-﻿namespace QuizDishtv.ViewModels
+﻿using QuizDishtv.Models;
+
+namespace QuizDishtv.ViewModels
 {
     public class FetchQuestionsViewModel
     {
@@ -6,9 +8,11 @@
         public string QuestionText { get; set; }
         public int CategoryId { get; set; }
         public List<FetchOptionsViewModel> Options { get; set; }
+        public string CategoryName { get; set; }
         public int AnswerId { get; set; }
         public string AnswerText { get; set; }
         public bool IsCorrect { get; set; }
+
     }
     public class FetchOptionsViewModel
     {
@@ -16,4 +20,5 @@
         public string AnswerText { get; set; }
         public bool IsCorrect { get; set; }
     }
+   
 }

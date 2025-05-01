@@ -57,7 +57,7 @@
         color: white;
         transition: all 0.3s ease;
         min-height: 80vh;
-        /* border-top: 0.5px solid white; */
+        border-top: 0.5px solid white;
 
 
         }
@@ -81,9 +81,8 @@
         height: calc(100vh - 120px); 
         }
 
-        .sidebar a.active,
-        .sidebar a.hovered {
-        background-color: darkslateblue;
+        .sidebar-link.active {
+            background-color: darkslateblue;
         }
     </style> 
 </head>
@@ -151,14 +150,11 @@
             
             @if (User.IsInRole("Admin"))
             {
-                <div id="sidebar" class="sidebar">
+                <div class="sidebar">
             
-                    <a asp-controller="Admin" asp-action="SelectCategory"
-                       class="@(ViewContext.RouteData.Values["action"].ToString() == "SelectCategory" ? "hovered" : "")">Leaderboard</a>
-                    <a asp-controller="Admin" asp-action="AssignRole"
-                       class="@(ViewContext.RouteData.Values["action"].ToString() == "AssignRole" ? "hovered" : "")">Roles</a>
-                    <a asp-controller="Admin" asp-action="Questions"
-                       class="@(ViewContext.RouteData.Values["action"].ToString() == "Questions" ? "hovered" : "")">Questions</a>
+                    <a asp-controller="Admin" asp-action="SelectCategory" class="sidebar-link">Leaderboard</a>
+                    <a asp-controller="Admin" asp-action="AssignRole" class="sidebar-link">Roles</a>
+                    <a asp-controller="Admin" asp-action="Questions" class="sidebar-link">Questions</a>
                     
                 </div>
             }
@@ -178,5 +174,21 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(document).ready(function () {
+            var currentUrl = window.location.pathname.toLowerCase();
+
+            $('.sidebar-link').each(function () {
+                var link = $(this).attr('href').toLowerCase();
+                if (currentUrl === link) {
+                    $(this).addClass('active');
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>
+
+
