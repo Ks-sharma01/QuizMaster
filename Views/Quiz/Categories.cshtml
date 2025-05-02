@@ -1,36 +1,4 @@
-﻿@* @model IEnumerable<dynamic> *@
-@* @{ *@
-@*     ViewData["Title"] = "SelectQuiz"; *@
-@* } *@
-@* <style> *@
-@*     body{ *@
-@*     background-color : gainsboro *@
-@*     } *@
-@*     .QuizCart{ *@
-@*     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); *@
-@*     background-color: white; *@
-@*     } *@
-
-@* </style> *@
-@*      <h3 class="text-center font-monospace bg-success text-white mt-2">Select Category</h3> *@
-@* <div class="container mt-3 "> *@
-@*     <div class="row gap-5 m-auto"> *@
-@*              @foreach (var item in Model)  *@
-@*             {  *@
-
-@*                  <div class="col rounded QuizCart d-flex justify-content-center align-items-center" style="height: 100px;">   *@
-
-@*                      <a asp-controller="Quiz" asp-action="Index" asp-route-id=@item.CategoryId>   *@
-@*                         <h3 class="text-center fw-bold">@item.Name</h3>   *@
-@*                     </a>   *@
-@*                  </div>   *@
-@*             } *@
-      
-@*     </div> *@
-
-@* </div> *@
-
-
+﻿
 @model List<Category>
 
 @{

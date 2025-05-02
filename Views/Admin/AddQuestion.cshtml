@@ -13,7 +13,7 @@
 
     <div class="mb-3">
         <label asp-for="CategoryId" class="form-label">Category</label>
-        <select asp-for="CategoryId" class="form-select" asp-items="Model.CategoryList">
+        <select asp-for="CategoryId" class="form-select" asp-items="Model.CategoryList" required>
             <option value="">-- Select Category --</option>
         </select>
         <span asp-validation-for="CategoryId" class="text-danger"></span>

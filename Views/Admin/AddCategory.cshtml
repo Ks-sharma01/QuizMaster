@@ -1,0 +1,28 @@
+﻿@model List<Category>
+
+    @{
+        ViewBag.Title = "Add Category";
+    }
+
+<form asp-controller="Admin" asp-action="AddCategory" method="post" class="mt-2 w-50"  >
+<h3>Add Category</h3>
+    <div class="d-flex gap-2">
+        <input name="Name" placeholder="Enter Category Name"/>
+
+
+    <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+
+</form>
+<hr />
+    <h4><strong>Categories</strong></h4>
+<div class="w-50 text-center">
+    @foreach(var category in Model)
+    {
+        <div class="d-flex gap-2">
+
+        <p class="fw-bold form-control my-2">@category.Name</p>
+        <a asp-controller="Admin" asp-action="DeleteCategory" class="btn btn-danger my-2" asp-route-id="@category.CategoryId">Delete</a>
+        </div>
+    }
+</div>

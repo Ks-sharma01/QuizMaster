@@ -16,12 +16,10 @@ namespace QuizDishtv.Controllers
     public class AdminController : Controller
     {
         private readonly QuizDbContext _context;
-        //private readonly IQuizService _quizService;
 
         public AdminController(QuizDbContext context)
         {
             _context = context;
-            //_quizService = quizService;
         }
 
         public IActionResult Leaderboard(int categoryId)
@@ -64,40 +62,9 @@ namespace QuizDishtv.Controllers
             }
             return RedirectToAction("Dashboard", "Admin");
         }
-        //public IActionResult AddQuestion()
-        //{
-        //    return View(new QuestionInputViewModel 
-        //    { 
-        //Answers = new List<AnswerInputViewModel> 
-        //      { 
-        //        new AnswerInputViewModel()
-        //      } 
-        //    });
-        //}
         
         public async Task<IActionResult> Questions()
         {
-            //var rawData = await _context.Set<QuestionAnswerDto>()
-            //    .FromSqlRaw("EXEC GetAllQuestionsWithAnswers")
-            //    .ToListAsync();
-
-            //var groupedQuestions = rawData
-            //    .GroupBy(q => new { q.QuestionId, q.QuestionText, q.CategoryId, q.CategoryName })
-            //    .Select(g => new FetchQuestionsViewModel
-            //    {
-            //        QuestionId = g.Key.QuestionId,
-            //        QuestionText = g.Key.QuestionText,
-            //        CategoryId = g.Key.CategoryId,
-            //        CategoryName = g.Key.CategoryName.Distinct().ToString(),
-            //        Options = g.Select(a => new FetchOptionsViewModel
-            //        {
-            //            AnswerId = a.AnswerId,
-            //            AnswerText = a.AnswerText,
-            //            IsCorrect = a.IsCorrect
-            //        }).ToList()
-            //    }).ToList();
-
-            //return View(groupedQuestions); 
             var categories = await _context.Category.ToListAsync();
 
             var questionWithCategories = await _context.Questions
@@ -123,78 +90,38 @@ namespace QuizDishtv.Controllers
             return View(viewModel);
         }
 
+        public IActionResult AddCategory()
+        {
+            var categories = _context.Category.ToList();
+            return View(categories);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCategory(Category model)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("@Name", model.Name),
+            };
+            await _context.Database.ExecuteSqlRawAsync("EXEC spInsertCategory @Name", parameters);
+            return RedirectToAction("AddQuestion");
+        }
+
+        
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var parameters = new[]
+            {
+                new SqlParameter("@CategoryId", id)
+            };
+            await _context.Database.ExecuteSqlRawAsync("EXEC spDeleteCategory @CategoryId", parameters);
+            return RedirectToAction("AddCategory");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddQuestion(QuestionInputViewModel model)
         {
-            //if (ModelState.IsValid)
-            //{
-            //    var categories = await _context.Category.ToListAsync();
-            //    model.CategoryList = new SelectList(categories, "CategoryId", "Name");
-            //    return View(model);
-            //}
-            //    await _quizService.AddQuestionAsync(model);
-            //    return RedirectToAction("AddQuestion");
-            ////return View(model);
-            ///
-
-            //if (!ModelState.IsValid)
-            //{
-            //    // Re-populate categories in case of error
-            //    var categories = await _context.Category.ToListAsync();
-            //    model.CategoryList = new SelectList(categories, "CategoryId", "Name");
-            //    return View(model);
-            //}
-
-            //// Insert the question using the stored procedure
-            //var parameters = new[]
-            //{
-            //     new SqlParameter("@Text", model.Text),
-            //     new SqlParameter("@CategoryId", model.CategoryId)
-            // };
-
-            //await _context.Database.ExecuteSqlRawAsync("EXEC AddQuestion @Text, @CategoryId", parameters);
-
-            //// Get the inserted question (by text match and descending ID)
-            //var insertedQuestion = await _context.Questions
-            //    .OrderByDescending(q => q.QuestionId)
-            //    .FirstOrDefaultAsync(q => q.Text == model.Text);
-
-            //// Insert each answer for the question
-            //if (insertedQuestion != null)
-            //{
-            //    foreach (var answer in model.Answers)
-            //    {
-            //        await _context.Database.ExecuteSqlRawAsync(
-            //            "EXEC AddAnswer @QuestionId = {0}, @Text = {1}, @IsCorrect = {2}",
-            //            insertedQuestion.QuestionId, answer.Text, answer.IsCorrect
-            //        );
-            //    }
-            //}
-
-            //return RedirectToAction("AddQuestion");
-
-            // Server-side validation
-            //if (!model.Answers.Any(a => a.IsCorrect))
-            //{
-            //    ModelState.AddModelError(string.Empty, "At least one answer must be marked as correct.");
-            //}
-
-            //for (int i = 0; i < model.Answers.Count; i++)
-            //{
-            //    if (string.IsNullOrWhiteSpace(model.Answers[i].Text))
-            //    {
-            //        ModelState.AddModelError($"Answers[{i}].Text", $"Option {i + 1} is required.");
-            //    }
-            //}
-
-            //if (!ModelState.IsValid)
-            //{
-            //    var categories = await _context.Category.ToListAsync();
-            //    model.CategoryList = new SelectList(categories, "CategoryId", "Name");
-            //    return View(model);
-            //}
-
             // Insert Question via Stored Procedure
             var parameters = new[]
             {

@@ -31,6 +31,7 @@ namespace QuizDishtv.Controllers
             var questions = _context.Questions
                 .Include(q => q.Answers)
                 .Where(q => q.CategoryId == categoryId).ToList();
+            
             if (questionIndex >= questions.Count)
             {
                 return RedirectToAction("ShowResult", new { categoryId });
