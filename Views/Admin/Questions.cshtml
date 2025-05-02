@@ -4,7 +4,7 @@
 }
 <div class="d-flex gap-5 mt-2">
 <a asp-controller="Admin" asp-action="AddQuestion" class="btn btn-success mb-3">Add Question</a>
-   
+    
 </div>
 <table class="table table-bordered table-striped">
     <thead>
@@ -21,7 +21,6 @@
 
     <tbody id="questionTableBody"> 
        
-
         @foreach (var item in Model)
         {
             <tr>
@@ -72,8 +71,11 @@
         }
         
 
+
     </tbody>
 </table>
+
+
 
 
 

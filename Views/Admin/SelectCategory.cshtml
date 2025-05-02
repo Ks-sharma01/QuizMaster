@@ -1,16 +1,4 @@
 ﻿ @model List<Category> 
-@* <form asp-controller="Admin" asp-action="Leaderboard" method="get"> *@
-@*     <strong>Select Category</strong> *@
-@*     <select name="categoryId" class="form-control"> *@
-@*             <option value="0">Select Category</option> *@
-@*         @foreach (var category in Model) *@
-@*         { *@
-@*             <option value="@category.CategoryId">@category.Name</option> *@
-@*         } *@
-@*     </select> *@
-@*     <button type="submit" class="btn btn-primary mt-2">View Leaderboard</button> *@
-@* </form> *@
-
 
 @{
     ViewBag.Title = "Select Category";
@@ -18,7 +6,7 @@
 
 <h3>Select Quiz Category</h3>
 
-<select id="categorySelect" class="form-control mb-3">
+<select id="categorySelect" class="form-select mb-3">
     <option value="">-- Select Category --</option>
     @foreach (var category in Model)
     {

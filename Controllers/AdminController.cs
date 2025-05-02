@@ -122,7 +122,7 @@ namespace QuizDishtv.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddQuestion(QuestionInputViewModel model)
         {
-            // Insert Question via Stored Procedure
+            // Insert Question through Stored Procedure
             var parameters = new[]
             {
             new SqlParameter("@Text", model.Text),
@@ -146,7 +146,6 @@ namespace QuizDishtv.Controllers
                     );
                 }
             }
-
             return RedirectToAction("Questions"); // Redirect to the question list
         }
 
