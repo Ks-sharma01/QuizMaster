@@ -21,7 +21,7 @@ Role-protected admin dashboard
 Monitor user performances
 
 🛠️ Tech Stack
-Frontend: HTML, CSS, JavaScript, Bootstrap
+Frontend: HTML, CSS, JavaScript, JQuery, Bootstrap
 
 Backend: ASP.NET Core MVC (C#)
 
