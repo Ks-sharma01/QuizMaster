@@ -102,9 +102,10 @@ namespace QuizDishtv.Controllers
         {
             var parameters = new[]
             {
+                new SqlParameter("@Operation", "insert"),
                 new SqlParameter("@Name", model.Name),
             };
-            await _context.Database.ExecuteSqlRawAsync("EXEC spInsertCategory @Name", parameters);
+            await _context.Database.ExecuteSqlRawAsync("EXEC spCategoryOperation @Operation, @Name", parameters);
             return RedirectToAction("AddQuestion");
         }
 
@@ -113,9 +114,10 @@ namespace QuizDishtv.Controllers
         {
             var parameters = new[]
             {
+                new SqlParameter("@Operation", "delete"),
                 new SqlParameter("@CategoryId", id)
             };
-            await _context.Database.ExecuteSqlRawAsync("EXEC spDeleteCategory @CategoryId", parameters);
+            await _context.Database.ExecuteSqlRawAsync("EXEC spCategoryOperation @Operation, @CategoryId", parameters);
             return RedirectToAction("AddCategory");
         }
 
