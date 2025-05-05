@@ -25,7 +25,7 @@ Frontend: HTML, CSS, JavaScript, Bootstrap
 
 Backend: ASP.NET Core MVC (C#)
 
-Authentication: ASP.NET Identity (Role-based)
+Authentication: Role-based Authentication
 
 Database: SQL Server/Stored Procedure
 
@@ -38,7 +38,7 @@ Admin	View leaderboard, manage users/quizzes, add categories/questions through s
 
 🧑‍💻 Getting Started
 Prerequisites
-.NET 6 or later
+.NET Core 6 or later
 
 SQL Server
 
