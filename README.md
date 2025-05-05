@@ -66,7 +66,7 @@ bash
 Copy
 Edit
 dotnet run
-Navigate to https://localhost:5001 in your browser.
+Navigate to https://localhost:7064/ in your browser.
 
 User:
 
