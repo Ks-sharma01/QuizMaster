@@ -63,14 +63,13 @@ namespace QuizDishtv.Controllers
             return RedirectToAction("Dashboard", "Admin");
         }
         
-        public async Task<IActionResult> Questions(int? categoryId)
+        public async Task<IActionResult> Questions()
         {
             var categories = await _context.Category.ToListAsync();
 
             var questionWithCategories = await _context.Questions
                 .Include(q => q.Category)
                 .Include(q => q.Answers)
-                .Where(q => !categoryId.HasValue || q.CategoryId == categoryId.Value)
                 .ToListAsync();
 
             ViewBag.Categories = new SelectList(categories, "CategoryId", "Name");
