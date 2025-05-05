@@ -7,7 +7,7 @@
 <form asp-controller="Admin" asp-action="AddCategory" method="post" class="mt-2" style="width: 400px"  >
 <h3>Add Category</h3>
     <div class="d-flex gap-2">
-        <input name="Name" placeholder="Enter Category Name" class="form-control"/>
+        <input name="Name" placeholder="Enter Category Name" class="form-control" required/>
 
 
     <button type="submit" class="btn btn-primary">Add</button>
@@ -22,7 +22,6 @@
         <div class="d-flex gap-2">
 
         <p class="fw-bold form-control my-2">@category.Name</p>
-        @* <a asp-controller="Admin" asp-action="DeleteCategory" class="btn btn-danger my-2" asp-route-id="@category.CategoryId">Delete</a> *@
 
             <button type="button" class="btn btn-danger my-2" data-bs-toggle="modal" data-bs-target="#deleteModal-@category.CategoryId">
                 Delete

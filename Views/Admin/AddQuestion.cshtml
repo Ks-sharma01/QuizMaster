@@ -6,12 +6,7 @@
 <h2>Add Question</h2>
 
 <form asp-controller="Admin" asp-action="AddQuestion" method="post" class="mb-4">
-    <div>
-        <label>Question Text</label>
-        <input asp-for="Text" class="form-control" placeholder="Enter question" required />
-    </div>
-
-    <div class="mb-3">
+    <div class="mb-2">
         <label asp-for="CategoryId" class="form-label">Category</label>
         <select asp-for="CategoryId" class="form-select" asp-items="Model.CategoryList" required>
             <option value="">-- Select Category --</option>
@@ -19,6 +14,10 @@
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
 
+    <div>
+        <label>Question Text</label>
+        <input asp-for="Text" class="form-control" placeholder="Enter question" required />
+    </div>
 
     <h4>Options</h4>
 
