@@ -50,7 +50,7 @@ Clone the repository:
 bash
 Copy
 Edit
-git clone https://github.com/Ks-sharma/QuizMaster
+git clone https://github.com/Ks-sharma01/QuizMaster.git
 cd QuizMaster
 Update the appsettings.json with your SQL Server connection string.
 
