@@ -21,7 +21,7 @@ Role-protected admin dashboard
 Monitor user performances
 
 🛠️ Tech Stack
-Frontend: HTML, CSS, JavaScript, Bootstrap
+Frontend: HTML, CSS, JavaScript, JQuery, Bootstrap
 
 Backend: ASP.NET Core MVC (C#)
 
@@ -66,7 +66,7 @@ bash
 Copy
 Edit
 dotnet run
-Navigate to https://localhost:5001 in your browser.
+Navigate to https://localhost:7064/ in your browser.
 
 User:
 
@@ -79,15 +79,15 @@ Edit
 /Controllers
 /Views
 /Models
+/ViewModels
 /Data
 /Migrations
 /wwwroot
+
 📌 Future Enhancements
 Quiz timer functionality
 
 Quiz categories and difficulty levels
-
-Admin quiz creation UI
 
 User analytics dashboard
 
