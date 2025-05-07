@@ -18,6 +18,11 @@ namespace QuizDishtv.Data
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<QuestionAnswerDto>().HasNoKey();
+            modelBuilder.Entity<Question>()
+    .HasMany(q => q.Answers)
+    .WithOne(a => a.Questions)
+    .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
     }

@@ -8,7 +8,6 @@ namespace QuizDishtv.ViewModels
     {
         public string Text { get; set; }
 
-        [Required(ErrorMessage = "Please select a category.")]
         public int CategoryId { get; set; }
         public List<AnswerInputViewModel> Answers { get; set; }
         public List<Category> categories { get; set; }

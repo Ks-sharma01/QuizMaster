@@ -7,6 +7,7 @@ using QuizDishtv.ViewModels;
 
 namespace QuizDishtv.Controllers
 {
+    [Authorize(Roles = "User")]
     public class QuizController : Controller
     {
         private readonly QuizDbContext _context;
@@ -16,18 +17,17 @@ namespace QuizDishtv.Controllers
             _context = context;
         }
 
-        [Authorize(Roles ="User")]
         public IActionResult Categories()
         {
             var categories = _context.Category.ToList();
             return View(categories);
         }
 
-        [Authorize]
         public IActionResult StartQuiz(int categoryId, int questionIndex = 0)
         {
             var questions = _context.Questions
                 .Include(q => q.Answers)
+                .OrderBy(q => Guid.NewGuid())
                 .Where(q => q.CategoryId == categoryId).ToList();
 
             if(questions.Count == 0)

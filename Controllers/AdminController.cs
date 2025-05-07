@@ -51,16 +51,16 @@ namespace QuizDishtv.Controllers
         }
 
         [HttpPost]
-        public IActionResult AssignRole(int userId, string role)
+        public async Task<IActionResult> AssignRole(int userId, string role)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
             if (user != null)
             {
                 user.Role = role;
                 _context.Update(user);
-                _context.SaveChanges();
+               await _context.SaveChangesAsync();
             }
-            return RedirectToAction("Dashboard", "Admin");
+            return RedirectToAction("SelectCategory", "Admin");
         }
         
         public async Task<IActionResult> Questions()
@@ -105,11 +105,11 @@ namespace QuizDishtv.Controllers
                 new SqlParameter("@Operation", "insert"),
                 new SqlParameter("@Name", model.Name),
             };
-            await _context.Database.ExecuteSqlRawAsync("EXEC spCategoryOperation @Operation, @Name", parameters);
+            await _context.Database.ExecuteSqlRawAsync("EXEC spCategoryOperation @Operation,null, @Name", parameters);
             return RedirectToAction("AddQuestion");
         }
-
         
+
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var parameters = new[]
@@ -125,31 +125,30 @@ namespace QuizDishtv.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddQuestion(QuestionInputViewModel model)
         {
-            // Insert Question through Stored Procedure
-            var parameters = new[]
+            var QuestionsParameters = new[]
             {
             new SqlParameter("@Text", model.Text),
-            new SqlParameter("@CategoryId", model.CategoryId)
+            new SqlParameter("@CategoryId", model.CategoryId),
             };
 
-            await _context.Database.ExecuteSqlRawAsync("EXEC AddQuestion @Text, @CategoryId", parameters);
+            // Insert Question through Stored Procedure
+            await _context.Database.ExecuteSqlRawAsync("EXEC AddQuestion @Text, @CategoryId", QuestionsParameters);
 
             // Get the inserted question to get its ID
             var insertedQuestion = await _context.Questions
                 .OrderByDescending(q => q.QuestionId)
                 .FirstOrDefaultAsync(q => q.Text == model.Text);
-
             if (insertedQuestion != null)
-            {
+            {    
                 foreach (var answer in model.Answers)
-                {
+                {   
                     await _context.Database.ExecuteSqlRawAsync(
                         "EXEC AddAnswer @QuestionId = {0}, @Text = {1}, @IsCorrect = {2}",
-                        insertedQuestion.QuestionId, answer.Text, answer.IsCorrect
+                       insertedQuestion.QuestionId, answer.Text, answer.IsCorrect 
                     );
                 }
             }
-            return RedirectToAction("Questions"); // Redirect to the question list
+            return RedirectToAction("Questions", "Admin"); // Redirect to the question list
         }
 
         public async Task<IActionResult> EditQuestion(int id)
@@ -177,7 +176,7 @@ namespace QuizDishtv.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditQuestion(EditQuestionViewModel model)
         {
@@ -185,10 +184,9 @@ namespace QuizDishtv.Controllers
             {
                 return View(model);
             }
-
             var question = await _context.Questions
                 .Include(q => q.Answers)
-                .FirstOrDefaultAsync(q => q.QuestionId==model.QuestionId);
+                .FirstOrDefaultAsync(q => q.QuestionId == model.QuestionId);
 
             if(question == null)
             {
@@ -199,7 +197,7 @@ namespace QuizDishtv.Controllers
 
             foreach(var answermodel in model.editAnswers)
             {
-                var answer = question.Answers.FirstOrDefault(a => a.AnswerId==answermodel.AnswerId);
+                var answer = question.Answers.FirstOrDefault(a => a.AnswerId == answermodel.AnswerId);
                 if(answer != null)
                 {
                     answer.Text = answermodel.Text;
@@ -218,8 +216,10 @@ namespace QuizDishtv.Controllers
                 .Include(q => q.Answers)
                 .FirstOrDefaultAsync(q => q.QuestionId == id);
 
-            if (question == null)
-                return NotFound();
+            if (question == null) return NotFound();
+            var answerIds = question.Answers.Select(a => a.AnswerId).ToList();
+            var userAnswers = _context.UserAnswer.Where(ua => answerIds.Contains(ua.SelectedAnswerId));
+            _context.UserAnswer.RemoveRange(userAnswers);
 
             _context.Questions.Remove(question);
             await _context.SaveChangesAsync();
