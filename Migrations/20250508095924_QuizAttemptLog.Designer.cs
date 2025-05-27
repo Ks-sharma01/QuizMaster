@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizDishtv.Data;
 
@@ -11,9 +12,11 @@ using QuizDishtv.Data;
 namespace QuizDishtv.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    partial class QuizDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250508095924_QuizAttemptLog")]
+    partial class QuizAttemptLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +58,7 @@ namespace QuizDishtv.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AnswerId")
+                    b.Property<int?>("AnswerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("AnsweredAt")
@@ -64,17 +67,13 @@ namespace QuizDishtv.Migrations
                     b.Property<int>("AttemptId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsCorrect")
+                    b.Property<bool?>("IsCorrect")
                         .HasColumnType("bit");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AnswerId");
-
-                    b.HasIndex("AttemptId");
 
                     b.HasIndex("QuestionId");
 
@@ -118,30 +117,6 @@ namespace QuizDishtv.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("QuizDishtv.Models.QuizAttempt", b =>
-                {
-                    b.Property<int>("AttemptId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AttemptId"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AttemptId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuizAttempts");
                 });
 
             modelBuilder.Entity("QuizDishtv.Models.Result", b =>
@@ -274,29 +249,13 @@ namespace QuizDishtv.Migrations
 
             modelBuilder.Entity("QuizDishtv.Models.AttemptedQuestion", b =>
                 {
-                    b.HasOne("QuizDishtv.Models.Answer", "Answer")
-                        .WithMany()
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuizDishtv.Models.QuizAttempt", "Attempt")
-                        .WithMany("AttemptedQuestions")
-                        .HasForeignKey("AttemptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuizDishtv.Models.Question", "Question")
+                    b.HasOne("QuizDishtv.Models.Question", "Questions")
                         .WithMany()
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Answer");
-
-                    b.Navigation("Attempt");
-
-                    b.Navigation("Question");
+                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("QuizDishtv.Models.Question", b =>
@@ -308,17 +267,6 @@ namespace QuizDishtv.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("QuizDishtv.Models.QuizAttempt", b =>
-                {
-                    b.HasOne("QuizDishtv.Models.User", "Users")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("QuizDishtv.Models.Result", b =>
@@ -375,11 +323,6 @@ namespace QuizDishtv.Migrations
             modelBuilder.Entity("QuizDishtv.Models.Question", b =>
                 {
                     b.Navigation("Answers");
-                });
-
-            modelBuilder.Entity("QuizDishtv.Models.QuizAttempt", b =>
-                {
-                    b.Navigation("AttemptedQuestions");
                 });
 #pragma warning restore 612, 618
         }

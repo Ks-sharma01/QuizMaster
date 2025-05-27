@@ -11,7 +11,7 @@
 <body>
     <div>
         <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-6">
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
                 <div class="container-fluid">
                     @if (User.IsInRole("Admin"))
                     {
@@ -60,12 +60,12 @@
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout" class="btn btn-danger">Logout</a>
                             </div>
                         }    
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
+            </nav>
+        </header>
         <main role="main" class="d-flex">
-            
+
             @if (User.IsInRole("Admin"))
             {
                 <div class="sidebar">
@@ -76,16 +76,20 @@
                 </div>
             }
             <div class="container content">
-                 @RenderBody()
+                @RenderBody()
             </div>
         </main>
-    
-     <footer class="border-top footer text-muted "> 
+
+    </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        
+    <footer class="border-top footer text-muted "> 
           <div class="container text-center text-white">  
              &copy; @DateTime.Now.Year - QuizDishtv <a class="text-white text-decoration-underline" asp-controller="Home" asp-action="Privacy">Privacy</a>
           </div>  
      </footer> 
-    </div>
+    }
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

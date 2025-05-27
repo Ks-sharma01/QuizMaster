@@ -1,20 +1,21 @@
 ﻿
 @model List<Category>
-
 @{
-    ViewData["Title"] = "Select a Quiz Category";
+    ViewData["Title"] = "Start Quiz";
 }
 
-<h2 class="text-center">@ViewData["Title"]</h2>
+<h2>Start Quiz in Category</h2>
 
-<div class="row">
-@foreach (var category in Model)
-{
-        <div class="col-4 shadow p-4 text-center">
+    <div class="row">
+        @foreach (var category in Model)
+        {
+            <div class="col-4 shadow p-4 text-center">
 
-        <h4>@category.Name</h4>
-        <a asp-action="StartQuiz" asp-route-categoryId="@category.CategoryId" class="btn btn-primary">Start Quiz</a>
-        </div>
-}
+                <h4>@category.Name</h4>
+                <a asp-action="StartQuiz" asp-route-categoryId="@category.CategoryId" class="btn btn-primary">Start Quiz</a>
+            </div>
+        }
     </div>
+
+
 

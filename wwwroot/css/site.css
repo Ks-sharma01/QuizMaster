@@ -27,7 +27,7 @@ body {
 header {
     background: #6c63ff;
     color: white;
-    padding: 30px;
+    padding: 20px;
     padding-top: 0;
     text-align: center;
 }
@@ -37,6 +37,7 @@ header {
     color: white;
     text-align: center;
     font-size: 15px;
+    padding:9.6px
 }
 
 a {
@@ -54,17 +55,17 @@ a {
     border-top: 0.2px solid white;
 }
 
-    .sidebar a {
+.sidebar a {
         display: block;
         color: white;
         padding: 12px 20px;
         text-decoration: none;
         margin-bottom: 3px
-    }
+}
 
-        .sidebar a:hover {
+.sidebar a:hover {
             background-color: darkslateblue;
-        }
+}
 
 .content {
     flex: 1;
@@ -72,6 +73,7 @@ a {
     padding-top: 0;
     overflow-y: auto;
     height: calc(100vh - 120px);
+/*    min-height: 87.5vh*/
 }
 
 .sidebar-link.active {

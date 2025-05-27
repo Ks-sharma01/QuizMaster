@@ -15,14 +15,18 @@ namespace QuizDishtv.Data
         public DbSet<Result> Results { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<UserAnswer> UserAnswer { get; set; }
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //public DbSet<QuizAttempt> QuizAttempts { get; set; }
+        public DbSet<AttemptedQuestion> AttemptedQuestions { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<QuestionAnswerDto>().HasNoKey();
             modelBuilder.Entity<Question>()
-    .HasMany(q => q.Answers)
-    .WithOne(a => a.Questions)
-    .OnDelete(DeleteBehavior.Cascade);
+                .HasMany(q => q.Answers)
+                .WithOne(a => a.Questions)
+                .OnDelete(DeleteBehavior.Cascade);
 
+            
         }
     }
     }

@@ -1,4 +1,5 @@
-﻿@model List<UserAnswer>
+﻿
+@model List<UserAnswer>
 
 @{
     ViewData["Title"] = "Your Quiz Result";
@@ -42,6 +43,13 @@
     </tbody>
     
 </table>
-<a asp-controller="Quiz" asp-action="Categories" class="btn btn-success mb-4"> &#11013; Attempt Again</a>
+<a asp-controller="Quiz" asp-action="RestartQuiz" class="btn btn-success mb-4" asp-route-categoryId="@ViewBag.CategoryId"> &#11013; Attempt Again</a>
+
+
+
+
+
+
+
 
 

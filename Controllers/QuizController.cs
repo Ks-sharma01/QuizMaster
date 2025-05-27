@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
 using QuizDishtv.ViewModels;
+using System.Linq;
 
 namespace QuizDishtv.Controllers
 {
@@ -25,32 +26,108 @@ namespace QuizDishtv.Controllers
 
         public IActionResult StartQuiz(int categoryId, int questionIndex = 0)
         {
-            var questions = _context.Questions
-                .Include(q => q.Answers)
-                .OrderBy(q => Guid.NewGuid())
-                .Where(q => q.CategoryId == categoryId).ToList();
+            //    var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
+            //    //Get all the questions for the selected category
 
-            if(questions.Count == 0)
+            //    //var questions = _context.Questions
+            //    //                        .Where(q => q.CategoryId == categoryId)
+            //    //                        .Include(q => q.Answers)  // Including answers if needed
+            //    //                        .ToList();
+
+            //    var questions = _context.Questions
+            //.FromSqlRaw(@"
+            //    SELECT TOP 1 * 
+            //    FROM Questions 
+            //    WHERE CategoryId = {0} 
+            //      AND Id NOT IN (
+            //          SELECT QuestionId FROM AttemptedQuestions WHERE UserId = {1}
+            //      ) 
+            //    ORDER BY NEWID()", categoryId, userId)
+            //.FirstOrDefaultAsync();
+
+            //    //// Check if there are any questions available
+            //    if (questions.Count == 0)
+            //    {
+            //        return NotFound("No questions found for this category.");
+            //    }
+
+            //    if (questionIndex >= questions.Count)
+            //    {
+            //        return RedirectToAction("ShowResult", new { categoryId });
+            //    }
+
+            //    var question = questions[questionIndex];
+            //    ViewBag.CategoryId = categoryId;
+
+            //    ViewBag.QuestionIndex = questionIndex;
+            //    ViewBag.TotalQuestions = questions.Count;
+
+            //    ////return View(nextQuestion);
+            //    return View(question);
+
+
+
+            var questions = _context.Questions
+                                  .Where(q => q.CategoryId == categoryId)
+                                   .Include(q => q.Answers)  // Including answers if needed
+                                   .ToList();
+
+            // Get current user ID
+            int userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
+            if (userId == null)
             {
-                return NotFound();
+                return Unauthorized();
             }
-            if (questionIndex >= questions.Count)
+
+            // Fetch one random unattempted question from database
+            var question =  _context.Questions
+                .FromSqlRaw(@"
+            SELECT TOP 1 * 
+            FROM Questions 
+            WHERE CategoryId = {0} 
+              AND QuestionId NOT IN (
+                  SELECT QuestionId FROM AttemptedQuestions WHERE UserId = {1}
+              ) 
+            ORDER BY NEWID()", categoryId, userId)
+                .Include(q => q.Answers) // include if needed
+                .FirstOrDefault();
+
+            // No more unattempted questions
+            if (question == null)
             {
                 return RedirectToAction("ShowResult", new { categoryId });
             }
 
-            var question = questions[questionIndex];
-            ViewBag.CategoryId = categoryId;
+            // Store the question as attempted
+
+            // With this corrected code:
+            var alreadyAttempted =  _context.AttemptedQuestions
+                .Any(a => a.UserId == userId && a.QuestionId == question.QuestionId);
+
+            if (!alreadyAttempted)
+            {
+                _context.AttemptedQuestions.Add(new AttemptedQuestion
+                {
+                    UserId = userId,
+                    CategoryId = categoryId,
+                    QuestionId = question.QuestionId,
+                    IsAttempted = true,
+                    AttemptedOn = DateTime.UtcNow
+                });
+                 _context.SaveChanges();
+            }
             ViewBag.QuestionIndex = questionIndex;
             ViewBag.TotalQuestions = questions.Count;
 
+            ViewBag.CategoryId = categoryId;
             return View(question);
         }
 
         [Authorize]
         [HttpPost]
-        public IActionResult SubmitAnswer(int categoryId, int questionId, int selectedAnswerId, int questionIndex)
+        public IActionResult SubmitAnswer(int categoryId, int questionId, int selectedAnswerId, int questionIndex)   //int categoryId, int questionId, int selectedAnswerId,
         {
+
             var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
             var existing = _context.UserAnswer.Where(x => x.UserId == userId && x.QuestionId == questionId).FirstOrDefault();
 
@@ -72,6 +149,8 @@ namespace QuizDishtv.Controllers
                 _context.UserAnswer.Update(existing);
             }
             _context.SaveChanges();
+            ViewBag.CategoryId = categoryId;
+
             return RedirectToAction("StartQuiz", new { categoryId, questionIndex = questionIndex + 1 });
         }
 
@@ -110,8 +189,26 @@ namespace QuizDishtv.Controllers
 
             ViewBag.Score = score;
             TempData["Total"] = answers.Count;
+            ViewBag.CategoryId = categoryId;
 
             return View(answers);
+
+        }
+
+        public IActionResult RestartQuiz(int categoryId)
+        {
+            var userId = _context.Users.FirstOrDefault(x => x.UserName == User.Identity.Name)?.UserId;
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var attemptsToRemove = _context.AttemptedQuestions
+                .Where(a => a.UserId == userId && a.Question.CategoryId == categoryId).ToList();
+            _context.AttemptedQuestions.RemoveRange(attemptsToRemove);
+            _context.SaveChanges();
+
+            return RedirectToAction("Categories");
         }
 
         [Authorize]
