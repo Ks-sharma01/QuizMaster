@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
@@ -69,7 +70,7 @@ namespace QuizDishtv.Controllers
 
             var questions = _context.Questions
                                   .Where(q => q.CategoryId == categoryId)
-                                   .Include(q => q.Answers)  // Including answers if needed
+                                   .Include(q => q.Answers)
                                    .ToList();
 
             // Get current user ID
@@ -78,18 +79,14 @@ namespace QuizDishtv.Controllers
             {
                 return Unauthorized();
             }
-
+            var parameters = new[]
+            {
+                new SqlParameter("@CategoryId", categoryId),
+                new SqlParameter("@UserId", userId)
+            };
             // Fetch one random unattempted question from database
             var question =  _context.Questions
-                .FromSqlRaw(@"
-            SELECT TOP 1 * 
-            FROM Questions 
-            WHERE CategoryId = {0} 
-              AND QuestionId NOT IN (
-                  SELECT QuestionId FROM AttemptedQuestions WHERE UserId = {1}
-              ) 
-            ORDER BY NEWID()", categoryId, userId)
-                .Include(q => q.Answers) // include if needed
+                .FromSqlRaw("EXEC spGetRandomQuestion @CategoryId, @UserId",parameters ).AsEnumerable()
                 .FirstOrDefault();
 
             // No more unattempted questions
@@ -98,9 +95,6 @@ namespace QuizDishtv.Controllers
                 return RedirectToAction("ShowResult", new { categoryId });
             }
 
-            // Store the question as attempted
-
-            // With this corrected code:
             var alreadyAttempted =  _context.AttemptedQuestions
                 .Any(a => a.UserId == userId && a.QuestionId == question.QuestionId);
 
