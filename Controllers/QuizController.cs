@@ -89,7 +89,6 @@ namespace QuizDishtv.Controllers
                 .FromSqlRaw("EXEC spGetRandomQuestion @CategoryId, @UserId",parameters ).AsEnumerable()
                 .FirstOrDefault();
 
-            // No more unattempted questions
             if (question == null)
             {
                 return RedirectToAction("ShowResult", new { categoryId });
@@ -105,8 +104,7 @@ namespace QuizDishtv.Controllers
                     UserId = userId,
                     CategoryId = categoryId,
                     QuestionId = question.QuestionId,
-                    IsAttempted = true,
-                    AttemptedOn = DateTime.UtcNow
+                    AttemptedOn = DateTime.Now
                 });
                  _context.SaveChanges();
             }

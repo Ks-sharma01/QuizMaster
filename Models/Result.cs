@@ -5,7 +5,9 @@ namespace QuizDishtv.Models
 {
     public class Result
     {
+        [Key]
         public int Id { get; set; }
+        [ForeignKey("User")]
         public int UserId { get; set; }
         public int CategoryId { get; set; }
         public int Score { get; set; }
