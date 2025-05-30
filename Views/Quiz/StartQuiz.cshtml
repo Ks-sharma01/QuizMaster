@@ -1,5 +1,4 @@
-﻿
-@model Question
+﻿@model Question
 
 @{
     ViewData["Title"] = "Quiz Question";
@@ -21,9 +20,16 @@
 
         @foreach (var answer in Model.Answers)
         {
+            var radioId = $"answer_{answer.AnswerId}"; // Unique ID for each input
             <div class="w-50 d-flex align-items-center">
-                <input type="radio" name="selectedAnswerId" value="@answer.AnswerId" class="mb-2" required />
-                <label name="selectedAnswerId" class="mx-2 mb-2">@answer.Text</label>
+                <input type="radio"
+                       id="@radioId"
+                       name="selectedAnswerId"
+                       value="@answer.AnswerId"
+                       class="mb-2"
+                       required />
+
+                <label for="@radioId" class="mx-2 mb-2">@answer.Text</label>
             </div>
         }
     </div>

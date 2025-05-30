@@ -30,10 +30,10 @@ namespace QuizDishtv.Controllers
             //    var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
             //    //Get all the questions for the selected category
 
-            //    //var questions = _context.Questions
-            //    //                        .Where(q => q.CategoryId == categoryId)
-            //    //                        .Include(q => q.Answers)  // Including answers if needed
-            //    //                        .ToList();
+            var questions = _context.Questions
+                                    .Where(q => q.CategoryId == categoryId)
+                                    .Include(q => q.Answers)  // Including answers if needed
+                                    .ToList();
 
             //    var questions = _context.Questions
             //.FromSqlRaw(@"
@@ -46,73 +46,73 @@ namespace QuizDishtv.Controllers
             //    ORDER BY NEWID()", categoryId, userId)
             //.FirstOrDefaultAsync();
 
-            //    //// Check if there are any questions available
-            //    if (questions.Count == 0)
-            //    {
-            //        return NotFound("No questions found for this category.");
-            //    }
-
-            //    if (questionIndex >= questions.Count)
-            //    {
-            //        return RedirectToAction("ShowResult", new { categoryId });
-            //    }
-
-            //    var question = questions[questionIndex];
-            //    ViewBag.CategoryId = categoryId;
-
-            //    ViewBag.QuestionIndex = questionIndex;
-            //    ViewBag.TotalQuestions = questions.Count;
-
-            //    ////return View(nextQuestion);
-            //    return View(question);
-
-
-
-            var questions = _context.Questions
-                                  .Where(q => q.CategoryId == categoryId)
-                                   .Include(q => q.Answers)
-                                   .ToList();
-
-            // Get current user ID
-            int userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
-            if (userId == null)
+            //// Check if there are any questions available
+            if (questions.Count == 0)
             {
-                return Unauthorized();
+                return NotFound("No questions found for this category.");
             }
-            var parameters = new[]
-            {
-                new SqlParameter("@CategoryId", categoryId),
-                new SqlParameter("@UserId", userId)
-            };
-            // Fetch one random unattempted question from database
-            var question =  _context.Questions
-                .FromSqlRaw("EXEC spGetRandomQuestion @CategoryId, @UserId",parameters ).AsEnumerable()
-                .FirstOrDefault();
 
-            if (question == null)
+            if (questionIndex >= questions.Count)
             {
                 return RedirectToAction("ShowResult", new { categoryId });
             }
 
-            var alreadyAttempted =  _context.AttemptedQuestions
-                .Any(a => a.UserId == userId && a.QuestionId == question.QuestionId);
+            var question = questions[questionIndex];
+            ViewBag.CategoryId = categoryId;
 
-            if (!alreadyAttempted)
-            {
-                _context.AttemptedQuestions.Add(new AttemptedQuestion
-                {
-                    UserId = userId,
-                    CategoryId = categoryId,
-                    QuestionId = question.QuestionId,
-                    AttemptedOn = DateTime.Now
-                });
-                 _context.SaveChanges();
-            }
             ViewBag.QuestionIndex = questionIndex;
             ViewBag.TotalQuestions = questions.Count;
 
-            ViewBag.CategoryId = categoryId;
+            ////return View(nextQuestion);
             return View(question);
+
+
+
+            //var questions = _context.Questions
+            //                      .Where(q => q.CategoryId == categoryId)
+            //                       .Include(q => q.Answers)
+            //                       .ToList();
+
+            //// Get current user ID
+            //int userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
+            //if (userId == null)
+            //{
+            //    return Unauthorized();
+            //}
+            //var parameters = new[]
+            //{
+            //    new SqlParameter("@CategoryId", categoryId),
+            //    new SqlParameter("@UserId", userId)
+            //};
+            //// Fetch one random unattempted question from database
+            //var question =  _context.Questions
+            //    .FromSqlRaw("EXEC spGetRandomQuestion @CategoryId, @UserId",parameters ).AsEnumerable()
+            //    .FirstOrDefault();
+
+            //if (question == null)
+            //{
+            //    return RedirectToAction("ShowResult", new { categoryId });
+            //}
+
+            //var alreadyAttempted =  _context.AttemptedQuestions
+            //    .Any(a => a.UserId == userId && a.QuestionId == question.QuestionId);
+
+            //if (!alreadyAttempted)
+            //{
+            //    _context.AttemptedQuestions.Add(new AttemptedQuestion
+            //    {
+            //        UserId = userId,
+            //        CategoryId = categoryId,
+            //        QuestionId = question.QuestionId,
+            //        AttemptedOn = DateTime.Now
+            //    });
+            //     _context.SaveChanges();
+            //}
+            //ViewBag.QuestionIndex = questionIndex;
+            //ViewBag.TotalQuestions = questions.Count;
+
+            //ViewBag.CategoryId = categoryId;
+            //return View(question);
         }
 
         [Authorize]
