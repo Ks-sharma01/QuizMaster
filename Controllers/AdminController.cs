@@ -21,13 +21,13 @@ namespace QuizDishtv.Controllers
             _context = context;
         }
 
-        public IActionResult Leaderboard(int categoryId)
+        public async Task<IActionResult> Leaderboard(int categoryId)
         {
-            var LeaderboardData = _context.Results.Where(x => x.CategoryId == categoryId)
+            var LeaderboardData = await _context.Results.Where(x => x.CategoryId == categoryId)
                 .OrderByDescending(s => s.Score)
                 .Include(s => s.User)
-                .Include(s => s.Category).ToList();
-            var viewModel = LeaderboardData.Select((s, index) => new LeaderboardViewModel
+                .Include(s => s.Category).ToListAsync();
+            var viewModel =  LeaderboardData.Select((s, index) => new LeaderboardViewModel
             {
                 Rank = index + 1,
                 Username = s.User.UserName,

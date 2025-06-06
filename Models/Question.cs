@@ -9,6 +9,7 @@ namespace QuizDishtv.Models
 
         public string Text { get; set; }
 
+
         public List<Answer> Answers { get; set; }
 
         public int CategoryId { get; set; }

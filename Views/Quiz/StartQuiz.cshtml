@@ -7,17 +7,20 @@
     int categoryId = (int)ViewBag.CategoryId;
 }
 
+<div class="d-flex justify-content-between">
 <h3 class="mt-2">Question @((questionIndex + 1)) of @totalQuestions</h3>
+<div id="timer" class="text-success fs-5 fw-bold">Time Taken: 00:00</div>
+</div>
 
 <p><strong>@Model.Text</strong></p>
 
-<form asp-action="SubmitAnswer" method="post">
+<form asp-action="SubmitAnswer" method="post" id="quizForm">
     <input type="hidden" name="questionId" value="@Model.QuestionId" />
     <input type="hidden" name="categoryId" value="@categoryId" />
     <input type="hidden" name="questionIndex" value="@questionIndex" /> 
+    <input type="hidden" name="TimeTaken" id="TimeTaken" />
 
     <div class="d-flex flex-sm-wrap">
-
         @foreach (var answer in Model.Answers)
         {
             var radioId = $"answer_{answer.AnswerId}"; // Unique ID for each input
@@ -39,14 +42,28 @@
      } 
      else 
      { 
-        <button type="submit" class="btn btn-success mt-4">Next</button>
-        
+        <button type="submit" class="btn btn-success mt-4">Next</button>  
      }
 </form>
 
+@section Scripts {
+
+<script>
+    $(document).ready(()=>{
+        let second = 0;
+        let timer = setInterval(()=>{
+            second++;
+            let min = Math.floor(second/60).toString().padStart(2,"0");
+            let sec = (second % 60).toString().padStart(2, "0");
+            document.getElementById("timer").textContent = `Time Taken: ${min}:${sec}`;
+            document.getElementById("TimeTaken").value  = second;
+        },1000)
 
 
+    })
+</script>
 
+}
 
 
 
