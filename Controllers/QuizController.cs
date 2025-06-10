@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
 using QuizDishtv.ViewModels;
+using QuizMaster.ViewModels;
 
 namespace QuizDishtv.Controllers
 {
@@ -25,26 +27,55 @@ namespace QuizDishtv.Controllers
 
         public async Task<IActionResult> StartQuiz(int categoryId, int questionIndex = 0)
         {
+            //var questions = await _context.Questions
+            //                        .Where(q => q.CategoryId == categoryId)
+            //                        .Include(q => q.Answers)
+            //                        .ToListAsync();
+
+            //var questions = await _context.Questions
+            //                        .Where(q => q.CategoryId == categoryId)
+            //                        .Include(q => q.Answers)
+            //                        .ToListAsync();
+
+
+            //if (questions.Count == 0)
+            //{
+            //    return NotFound("No questions found for this category.");
+            //}
+            //if (questionIndex >= questions.Count)
+            //{
+
+            //    return RedirectToAction("ShowResult", new { categoryId });
+            //}
+
+            //var question = questions[questionIndex];
+            //ViewBag.CategoryId = categoryId;
+            //ViewBag.QuestionIndex = questionIndex;
+            //ViewBag.TotalQuestions = questions.Count;
+
+            //return View(question);
+
             var questions = await _context.Questions
                                     .Where(q => q.CategoryId == categoryId)
                                     .Include(q => q.Answers)
+                                    .OrderBy(x => Guid.NewGuid())
                                     .ToListAsync();
+            var randomQuestion = questions.Distinct().ToList();
 
-            if (questions.Count == 0)
+            if (randomQuestion.Count == 0)
             {
                 return NotFound("No questions found for this category.");
             }
-
-            if (questionIndex >= questions.Count)
+            if (questionIndex >= randomQuestion.Count)
             {
-                
+
                 return RedirectToAction("ShowResult", new { categoryId });
             }
 
-            var question = questions[questionIndex];
+            var question = randomQuestion[questionIndex];
             ViewBag.CategoryId = categoryId;
             ViewBag.QuestionIndex = questionIndex;
-            ViewBag.TotalQuestions = questions.Count;
+            ViewBag.TotalQuestions = randomQuestion.Count;
 
             return View(question);
         }
@@ -55,7 +86,7 @@ namespace QuizDishtv.Controllers
         {
             var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
             var existing = await _context.UserAnswer.Where(x => x.UserId == userId && x.QuestionId == questionId).FirstOrDefaultAsync();
-           
+
             if (existing == null)
             {
                 existing = new UserAnswer
@@ -64,6 +95,7 @@ namespace QuizDishtv.Controllers
                     QuestionId = questionId,
                     SelectedAnswerId = selectedAnswerId,
                     CategoryId = categoryId,
+
                 };
                 _context.UserAnswer.Add(existing);
                await _context.SaveChangesAsync();
@@ -81,7 +113,7 @@ namespace QuizDishtv.Controllers
 
         public async Task<IActionResult> ShowResult(int categoryId)
         {
-            var userId =  _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
+            var userId = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name).UserId;
             var answers = await _context.UserAnswer
                 .Include(ua => ua.SelectedAnswer)
                 .Include(ua => ua.Question)
@@ -92,7 +124,7 @@ namespace QuizDishtv.Controllers
             int score = answers.Count(a => a.SelectedAnswer.IsCorrect);
             var result = await _context.Results
                 .FirstOrDefaultAsync(x => x.CategoryId == categoryId && x.UserId == userId);
-
+           
             if (result == null)
             {
                 result = new Result
@@ -116,7 +148,7 @@ namespace QuizDishtv.Controllers
             TempData["Total"] = answers.Count;
             ViewBag.CategoryId = categoryId;
 
-            return View(answers);
+            return View(result);
 
         }
 
