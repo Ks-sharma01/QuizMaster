@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using QuizDishtv.Data;
 using QuizDishtv.Models;
 using QuizDishtv.ViewModels;
+using QuizMaster.Models;
 using QuizMaster.ViewModels;
 
 namespace QuizDishtv.Controllers
@@ -27,52 +28,40 @@ namespace QuizDishtv.Controllers
 
         public async Task<IActionResult> StartQuiz(int categoryId, int questionIndex = 0)
         {
-            //var questions = await _context.Questions
-            //                        .Where(q => q.CategoryId == categoryId)
-            //                        .Include(q => q.Answers)
-            //                        .ToListAsync();
+            
 
-            //var questions = await _context.Questions
-            //                        .Where(q => q.CategoryId == categoryId)
-            //                        .Include(q => q.Answers)
-            //                        .ToListAsync();
-
-
-            //if (questions.Count == 0)
-            //{
-            //    return NotFound("No questions found for this category.");
-            //}
-            //if (questionIndex >= questions.Count)
-            //{
-
-            //    return RedirectToAction("ShowResult", new { categoryId });
-            //}
-
-            //var question = questions[questionIndex];
-            //ViewBag.CategoryId = categoryId;
-            //ViewBag.QuestionIndex = questionIndex;
-            //ViewBag.TotalQuestions = questions.Count;
-
-            //return View(question);
-
-            var questions = await _context.Questions
+            var TotalQuestions = await _context.Questions
                                     .Where(q => q.CategoryId == categoryId)
-                                    .Include(q => q.Answers)
+                                    .Include(x => x.Answers)
                                     .OrderBy(x => Guid.NewGuid())
                                     .ToListAsync();
-            var randomQuestion = questions.Distinct().ToList();
 
+            var randomQuestion = TotalQuestions.Distinct().ToList();
+            
             if (randomQuestion.Count == 0)
             {
                 return NotFound("No questions found for this category.");
             }
+
             if (questionIndex >= randomQuestion.Count)
             {
-
                 return RedirectToAction("ShowResult", new { categoryId });
             }
 
             var question = randomQuestion[questionIndex];
+            var checkAttempted = _context.AttemptedQuestions.FirstOrDefault(x => x.CategoryId == categoryId && x.QuestionId == question.QuestionId);
+            if (checkAttempted != null)
+            {
+                var attemptedCount = _context.AttemptedQuestions.Where(x => x.CategoryId == categoryId).ToList();
+                if(attemptedCount.Count == randomQuestion.Count)
+                {
+                    return RedirectToAction("ShowResult", new { categoryId });
+
+                }
+                
+                return RedirectToAction("StartQuiz", new { categoryId, questionIndex });
+
+            }
             ViewBag.CategoryId = categoryId;
             ViewBag.QuestionIndex = questionIndex;
             ViewBag.TotalQuestions = randomQuestion.Count;
@@ -98,16 +87,26 @@ namespace QuizDishtv.Controllers
 
                 };
                 _context.UserAnswer.Add(existing);
-               await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             else
             {
                 existing.SelectedAnswerId = selectedAnswerId;
                 _context.UserAnswer.Update(existing);
             }
-           await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             ViewBag.CategoryId = categoryId;
-           
+            var storedAttemptedQuestion = new AttemptedQuestion
+            {
+                QuestionId = questionId,
+                UserId = userId,
+                CategoryId = categoryId,
+                AttemptedOn = DateTime.Now,
+            };
+            _context.AttemptedQuestions.Add(storedAttemptedQuestion);
+            await _context.SaveChangesAsync();
+
+
             return RedirectToAction("StartQuiz", new { categoryId, questionIndex = questionIndex + 1 });
         }
 
@@ -148,14 +147,14 @@ namespace QuizDishtv.Controllers
             TempData["Total"] = answers.Count;
             ViewBag.CategoryId = categoryId;
 
-            return View(result);
+            return View(answers);
 
         }
 
         public async Task<IActionResult> RestartQuiz(int categoryId)
         {
             var userId = _context.Users.FirstOrDefault(x => x.UserName == User.Identity.Name)?.UserId;
-            if(userId == null)
+            if (userId == null)
             {
                 return Unauthorized();
             }
